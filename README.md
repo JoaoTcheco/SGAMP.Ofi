@@ -1,6 +1,6 @@
 # SGAMP.Ofi
 Trabalho contrusao de sistema de gestao de arquivos medicos de pacientes
-
+eu siu maluco fernando 
 contrucao a cago de Fernando e João docente Ataidé .......que que o senhor nos abençoe
 AMEM
 
