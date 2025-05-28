@@ -58,134 +58,43 @@ Após login bem-sucedido, o usuário acessa o menu com três opções:
 
 
 
-### Tela Cadastro Paciente 
-Dividido em duas seções principais:
-*secao 1 Dados Pessoais:**
-- Nome completo
-- Idade
-- Sexo
-- Nacionalidade
-- Local de nascimento
-- Local de trabalho/residência
-- Histórico de locais onde viveu
-- Pessoas com quem vive/viveu
-- Outros dados contextuais relevantes para avaliação médica
+CREATE DATABASE IF NOT EXISTS sgamp CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+USE sgamp;
 
-2.	Seccao 2 
+-- Tabela de usuários (médicos e técnicos)
+CREATE TABLE usuarios (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    senha VARCHAR(255) NOT NULL,
+    role ENUM('TECNICO', 'MEDICO') NOT NULL
+);
 
-Tela Paciente
-secção Consulta 
-Edição/Adição de Informações:**
- Para consultas existentes:
-  - Edição dos dados clínicos
-  - Adição de novas informações
-  - Upload de novos exames/imagens
-Para novas consultas:
-  - Criação de novo registro de consulta com data atual
-  - Registro completo dos novos sintomas
-  - Novas receitas e recomendações
-  - Upload de novos exames
-  - Observações médicas
+-- Tabela de pacientes
+CREATE TABLE pacientes (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    nome_completo VARCHAR(150) NOT NULL,
+    idade INT,
+    sexo ENUM('MASCULINO', 'FEMININO', 'OUTRO'),
+    nacionalidade VARCHAR(50),
+    local_nascimento VARCHAR(100),
+    local_trabalho_residencia VARCHAR(150),
+    historico_locais TEXT,
+    conviventes TEXT,
+    outros_dados TEXT
+);
 
-**tela procurar Paciente:**
-- Campo de pesquisa por nome (com sugestões durante a digitação)
-- Lista de pacientes correspondentes à pesquisa
-- Seleção do paciente desejado
-
-**3. Edição/Adição de Informações:**
-- Para consultas existentes:
-  - Edição dos dados clínicos
-  - Adição de novas informações
-  - Upload de novos exames/imagens
-
- Para novas consultas:
-  - Criação de novo registro de consulta com data atual
-  - Registro completo dos novos sintomas
-  - Novas receitas e recomendações
-  - Upload de novos exames
-  - Observações médicas
-
-
-
-
-**Funcionalidades:**
-- Listagem de pacientes por critérios selecionados e personalizados
-
-## Requisitos Técnicos Adicionais
-   - Autenticação obrigatória
-   - Banco de dados para informações estruturadas mysql
-   - Interface intuitiva e limpa
-   - Busca eficiente de pacientes
-   - Organização clara do histórico médico
-   - Sistema de backup regular dos dados
-
-
-
- 
-
-
-
-O meu xamp as seguintes config
-Servidor Web (Apache) Portas: 80 (HTTP) e 443 (HTTPS).
-Banco de Dados (MySQL) Porta: 3306 
-
-
-
-Descrição do Projeto Spring Initializr Gerado
-Configuração Básica do Projeto
-O projeto foi configurado com as seguintes características principais:
-Metadados do Projeto
-•	Nome do Projeto: sgamp
-•	Grupo: com.engsoft 
-•	Artefato: sgamp
-•	Pacote principal: com.engsoft.sgamp
-•	Descrição: Sistema de gestão de arquivos médicos de pacientes
-Configurações Técnicas
-•	Tipo de Projeto: Maven
-•	Linguagem Principal: Java
-•	Versão do Spring Boot: 3.5.0 
-•	Empacotamento: Jar 
-•	Versão do Java: 17 
-Dependências Selecionadas
-1.	Spring Web: Para construção de aplicações web RESTful
-2.	Spring Security: Para autenticação e controle de acesso
-3.	Spring Data JPA: Para persistência de dados com Hibernate
-4.	Lombok: Para redução de código boilerplate
-5.	Thymeleaf: Para templates server-side
-6.	Validação: Para validação de beans
-7.	DevTools: Para melhor experiência de desenvolvimento
-
-
-
-sgamp/
-├── src/
-│   ├── main/
-│   │   ├── java/
-│   │   │   └── com/
-│   │   │       └── engsoft/
-│   │   │           └── sgamp/
-│   │   │               └── SgampApplication.java  
-│   │   └── resources/
-│   │       └── application.properties  
-│   │
-│   └── test/
-│       ├── java/
-│       │   └── com/
-│       │       └── engsoft/
-│       │           └── sgamp/
-│       │               └── SgampApplicationTests.java  
-│       └── resources/
-│
-├── target/
-│   ├── generated-sources/
-│   │   └── annotations/  
-│   └── generated-test-sources/
-│       └── test-annotations/
-│
-├── JRE System Library 
-├── Maven Dependencies/  
-│
-├── mvnw  
-├── mvnw.cmd  
-├── pom.xml  
-└── README.md 
+-- Tabela de consultas
+CREATE TABLE consultas (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    paciente_id BIGINT NOT NULL,
+    data_consulta DATE NOT NULL,
+    sintomas TEXT,
+    receitas TEXT,
+    observacoes TEXT,
+    assinatura_medico VARCHAR(100),
+    arquivos_exames TEXT,
+    criado_por BIGINT,
+    FOREIGN KEY (paciente_id) REFERENCES pacientes(id) ON DELETE CASCADE,
+    FOREIGN KEY (criado_por) REFERENCES usuarios(id)
+);
