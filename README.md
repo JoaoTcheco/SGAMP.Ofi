@@ -99,4 +99,4 @@ CREATE TABLE consultas (
     FOREIGN KEY (criado_por) REFERENCES usuarios(id)
 );
 
-ds
+
