@@ -14,19 +14,13 @@ import java.util.List;
 @Repository
 public interface ConsultaRepository extends JpaRepository<Consulta, Long> {
 
-    /**
-     * Retorna todas as consultas de um determinado paciente.
-     *
-     * @param paciente Entidade paciente
-     * @return Lista de consultas encontradas
-     */
     List<Consulta> findByPaciente(Paciente paciente);
-
-    /**
-     * Retorna consultas de um paciente específico ordenadas por data (mais recentes primeiro).
-     *
-     * @param paciente Entidade paciente
-     * @return Lista de consultas ordenadas
-     */
+    
     List<Consulta> findByPacienteOrderByDataConsultaDesc(Paciente paciente);
+    
+    // Método para buscar por ID do paciente
+    List<Consulta> findByPacienteId(Long pacienteId);
+    
+    // Opcional: Método para buscar ordenado por data
+    List<Consulta> findByPacienteIdOrderByDataConsultaDesc(Long pacienteId);
 }

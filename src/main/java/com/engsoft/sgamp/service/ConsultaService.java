@@ -33,4 +33,9 @@ public class ConsultaService {
     public List<Consulta> listarPorPacienteId(Long pacienteId) {
         return consultaRepository.findByPacienteId(pacienteId);
     }
+    
+    // Método adicional opcional
+    public List<Consulta> listarPorPacienteIdOrdenadoPorData(Long pacienteId) {
+        return consultaRepository.findByPacienteIdOrderByDataConsultaDesc(pacienteId);
+    }
 }
