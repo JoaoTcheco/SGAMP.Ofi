@@ -185,28 +185,28 @@ sgamp/
 │   │   │   └── com/
 │   │   │       └── engsoft/
 │   │   │           └── sgamp/
-│   │   │               └── SgampApplication.java  # Classe principal do Spring Boot
+│   │   │               └── SgampApplication.java  
 │   │   └── resources/
-│   │       └── application.properties  # Arquivo de configuração
+│   │       └── application.properties  
 │   │
 │   └── test/
 │       ├── java/
 │       │   └── com/
 │       │       └── engsoft/
 │       │           └── sgamp/
-│       │               └── SgampApplicationTests.java  # Testes iniciais
+│       │               └── SgampApplicationTests.java  
 │       └── resources/
 │
 ├── target/
 │   ├── generated-sources/
-│   │   └── annotations/  # Código gerado (ex: Lombok)
+│   │   └── annotations/  
 │   └── generated-test-sources/
 │       └── test-annotations/
 │
-├── JRE System Library [JavaSE-17]  # JDK 17
-├── Maven Dependencies/  # Todas as libs do pom.xml
+├── JRE System Library 
+├── Maven Dependencies/  
 │
-├── mvnw  # Script Maven wrapper (Unix)
-├── mvnw.cmd  # Script Maven wrapper (Windows)
-├── pom.xml  # Configuração do projeto Maven
-└── README.md  # Documentação inicial
+├── mvnw  
+├── mvnw.cmd  
+├── pom.xml  
+└── README.md 
