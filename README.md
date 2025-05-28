@@ -17,7 +17,7 @@ maluco baixar as seguintes extensoes pack for java,,,spring boot, auto close tag
 aquii vamos por anotacoes maluco 
 
 
-no sistema abaixo dscreva a estrutura completa de como estara o projecto final isto e adiciona os pacotes e as classes que o projecto vai ter quando estiver completo e de a estrutura ja completa no sistema MVC, dis oque cada classe e  pacote vai ter e vai fazer, dis que classes se cominicam, diz a hierrarquia dessa comunicacao, dis que classes vai se conctar com o mysql, quem classes fazem o crud, en na hora de densevolvar quais serao a primeira classe a fazer e ate a ultima
+
 
 Sistema de gestão de arquivos médicos de pacientes
 É um sistema que serve para guardar os dados dos pacientes 
