@@ -5,6 +5,9 @@ contrucao a cago de Fernando e João docente Ataidé .......que que o senhor nos
 AMEM
 
 
+fernado cambio
+
+
 teste concecao com o repositorio gith hub e pc teste teste
 conexao recebida cambio bom.
 teste 2
@@ -15,9 +18,6 @@ maluco baixar as seguintes extensoes pack for java,,,spring boot, auto close tag
 
 
 aquii vamos por anotacoes maluco 
-
-
-
 
 Sistema de gestão de arquivos médicos de pacientes
 É um sistema que serve para guardar os dados dos pacientes 
@@ -153,28 +153,6 @@ Dependências Selecionadas
 5.	Thymeleaf: Para templates server-side
 6.	Validação: Para validação de beans
 7.	DevTools: Para melhor experiência de desenvolvimento
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
