@@ -98,3 +98,5 @@ CREATE TABLE consultas (
     FOREIGN KEY (paciente_id) REFERENCES pacientes(id) ON DELETE CASCADE,
     FOREIGN KEY (criado_por) REFERENCES usuarios(id)
 );
+
+ds
