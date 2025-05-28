@@ -7,6 +7,7 @@ AMEM
 
 fernado cambio
 joao recebido
+fernando conecao feita termino...
 
 teste concecao com o repositorio gith hub e pc teste teste
 conexao recebida cambio bom.
