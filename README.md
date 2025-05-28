@@ -100,3 +100,25 @@ CREATE TABLE consultas (
 );
 
 
+# Configuração do banco de dados MySQL
+spring.datasource.url=jdbc:mysql://localhost:3306/sgamp?useSSL=false&serverTimezone=UTC
+spring.datasource.username=root
+spring.datasource.password=  # coloque sua senha do MySQL aqui
+
+# Dialeto e JPA
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.format_sql=true
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL8Dialect
+
+# Thymeleaf
+spring.thymeleaf.cache=false
+
+# Porta do servidor
+server.port=8080
+
+# Segurança - redirecionamento após login
+spring.security.user.name=admin
+spring.security.user.password=admin
+spring.security.user.roles=TECNICO
+
