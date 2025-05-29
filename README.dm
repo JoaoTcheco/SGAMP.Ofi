@@ -318,6 +318,179 @@ public class WebSecurityConfig {
 }
 
 
+pacote servico
+
+ConsultaServico
+
+package com.engsoft.sgamp.service;
+
+import com.engsoft.sgamp.model.Consulta;
+import com.engsoft.sgamp.model.Paciente;
+import com.engsoft.sgamp.model.Usuario;
+import com.engsoft.sgamp.repository.ConsultaRepository;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.util.List;
+
+@Service
+public class ConsultaService {
+
+    private final ConsultaRepository consultaRepository;
+
+    public ConsultaService(ConsultaRepository consultaRepository) {
+        this.consultaRepository = consultaRepository;
+    }
+
+    public Consulta salvarConsulta(Consulta consulta, Usuario medico) {
+        consulta.setCriadoPor(medico);
+        if (consulta.getDataConsulta() == null) {
+            consulta.setDataConsulta(LocalDate.now());
+        }
+        return consultaRepository.save(consulta);
+    }
+
+    public List<Consulta> listarConsultasPorPaciente(Paciente paciente) {
+        return consultaRepository.findByPaciente(paciente);
+    }
+
+    public List<Consulta> listarConsultasPorPeriodo(LocalDate inicio, LocalDate fim) {
+        return consultaRepository.findByDataConsultaBetween(inicio, fim);
+    }
+
+    public Consulta buscarPorId(Long id) {
+        return consultaRepository.findById(id).orElse(null);
+    }
+}
+
+
+PacienteService
+
+package com.engsoft.sgamp.service;
+
+import com.engsoft.sgamp.model.Paciente;
+import com.engsoft.sgamp.repository.PacienteRepository;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class PacienteService {
+
+    private final PacienteRepository pacienteRepository;
+
+    public PacienteService(PacienteRepository pacienteRepository) {
+        this.pacienteRepository = pacienteRepository;
+    }
+
+    public Paciente salvarPaciente(Paciente paciente) {
+        return pacienteRepository.save(paciente);
+    }
+
+    public List<Paciente> buscarPorNome(String nome) {
+        return pacienteRepository.findByNomeCompletoContainingIgnoreCase(nome);
+    }
+
+    public List<Paciente> listarPorFiltros(String nome, Integer idade, Paciente.Sexo sexo) {
+        return pacienteRepository.findByFiltros(nome, idade, sexo);
+    }
+
+    public Paciente buscarPorId(Long id) {
+        return pacienteRepository.findById(id).orElse(null);
+    }
+}
+
+
+
+UsuarioService
+
+package com.engsoft.sgamp.service;
+
+import com.engsoft.sgamp.model.Usuario;
+import com.engsoft.sgamp.repository.UsuarioRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+@Service
+public class UsuarioService {
+
+    private final UsuarioRepository usuarioRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder) {
+        this.usuarioRepository = usuarioRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    public Usuario criarUsuario(Usuario usuario) {
+        usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
+        return usuarioRepository.save(usuario);
+    }
+
+    public boolean usernameDisponivel(String username) {
+        return !usuarioRepository.existsByUsername(username);
+    }
+
+    public Usuario buscarPorUsername(String username) {
+        return usuarioRepository.findByUsername(username).orElse(null);
+    }
+}
+
+
+AuthService
+
+package com.engsoft.sgamp.service;
+
+import com.engsoft.sgamp.DTO.LoginDTO;
+import com.engsoft.sgamp.model.Usuario;
+import com.engsoft.sgamp.repository.UsuarioRepository;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+@Service
+public class AuthService {
+    private final AuthenticationManager authenticationManager;
+    private final UsuarioRepository usuarioRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    public AuthService(AuthenticationManager authenticationManager, 
+                      UsuarioRepository usuarioRepository,
+                      PasswordEncoder passwordEncoder) {
+        this.authenticationManager = authenticationManager;
+        this.usuarioRepository = usuarioRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    public boolean authenticate(LoginDTO loginDTO) {
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                    loginDTO.getUsername(),
+                    loginDTO.getSenha()
+                )
+            );
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public void logout() {
+        SecurityContextHolder.clearContext();
+    }
+
+    public Usuario registerMedico(Usuario usuario) {
+        usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
+        return usuarioRepository.save(usuario);
+    }
+}
+
+
 pom.xml
 
 <?xml version="1.0" encoding="UTF-8"?>
