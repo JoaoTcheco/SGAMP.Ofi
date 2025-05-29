@@ -609,3 +609,477 @@ pom.xml
 
 </project>
 
+
+
+para primeira atualizacao------------------------------------------------------------------
+# Implementação do Sistema de Login
+
+Vou criar as classes necessárias e a tela de login para tornar o processo de autenticação funcional. Aqui estão as atualizações necessárias:
+
+## 1. Primeiro, vamos criar o DTO para login:
+
+`src/main/java/com/engsoft/sgamp/DTO/LoginDTO.java`
+```java
+package com.engsoft.sgamp.DTO;
+
+import lombok.Data;
+
+@Data
+public class LoginDTO {
+    private String username;
+    private String senha;
+}
+```
+
+## 2. Configuração de Segurança:
+
+`src/main/java/com/engsoft/sgamp/config/SecurityConfig.java`
+```java
+package com.engsoft.sgamp.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/", "/login", "/css/**", "/js/**").permitAll()
+                .anyRequest().authenticated()
+            )
+            .formLogin(form -> form
+                .loginPage("/login")
+                .defaultSuccessUrl("/painel", true)
+                .permitAll()
+            )
+            .logout(logout -> logout
+                .logoutSuccessUrl("/login?logout")
+                .permitAll()
+            );
+        
+        return http.build();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+}
+```
+
+## 3. Controlador para autenticação:
+
+`src/main/java/com/engsoft/sgamp/controller/AuthController.java`
+```java
+package com.engsoft.sgamp.controller;
+
+import com.engsoft.sgamp.DTO.LoginDTO;
+import com.engsoft.sgamp.service.AuthService;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@Controller
+@RequestMapping("/login")
+public class AuthController {
+
+    private final AuthService authService;
+
+    public AuthController(AuthService authService) {
+        this.authService = authService;
+    }
+
+    @GetMapping
+    public String showLoginForm(Model model) {
+        model.addAttribute("loginDTO", new LoginDTO());
+        return "login";
+    }
+
+    @PostMapping
+    public String login(LoginDTO loginDTO, Model model) {
+        if (authService.authenticate(loginDTO)) {
+            return "redirect:/painel";
+        }
+        model.addAttribute("error", "Credenciais inválidas");
+        return "login";
+    }
+}
+```
+
+## 4. Tela de Login (HTML com CSS e JS embutido):
+
+`src/main/resources/templates/login.html`
+```html
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SGAMP - Login</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        
+        .login-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 350px;
+            text-align: center;
+        }
+        
+        .logo {
+            margin-bottom: 30px;
+        }
+        
+        .logo h1 {
+            color: #2c3e50;
+            margin: 0;
+            font-size: 24px;
+        }
+        
+        .logo p {
+            color: #7f8c8d;
+            margin: 5px 0 0;
+            font-size: 14px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        
+        .error-message {
+            color: #e74c3c;
+            font-size: 13px;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        .login-button {
+            width: 100%;
+            padding: 12px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .login-button:hover {
+            background-color: #2980b9;
+        }
+        
+        .footer {
+            margin-top: 20px;
+            font-size: 13px;
+            color: #7f8c8d;
+        }
+        
+        .alert {
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo">
+            <h1>SGAMP</h1>
+            <p>Sistema de Gestão de Arquivos Médicos de Pacientes</p>
+        </div>
+        
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+        
+        <form th:action="@{/login}" th:object="${loginDTO}" method="post">
+            <div class="form-group">
+                <label for="username">Nome de Usuário</label>
+                <input type="text" id="username" th:field="*{username}" required>
+                <div class="error-message" id="username-error"></div>
+            </div>
+            
+            <div class="form-group">
+                <label for="senha">Senha</label>
+                <input type="password" id="senha" th:field="*{senha}" required>
+                <div class="error-message" id="password-error"></div>
+            </div>
+            
+            <button type="submit" class="login-button">Entrar</button>
+        </form>
+        
+        <div class="footer">
+            Sistema exclusivo para profissionais de saúde
+        </div>
+    </div>
+
+    <script>
+        document.querySelector('form').addEventListener('submit', function(e) {
+            let isValid = true;
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('senha').value.trim();
+            
+            // Validação simples do lado do cliente
+            if (!username) {
+                document.getElementById('username-error').textContent = 'Por favor, insira o nome de usuário';
+                document.getElementById('username-error').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('username-error').style.display = 'none';
+            }
+            
+            if (!password) {
+                document.getElementById('password-error').textContent = 'Por favor, insira a senha';
+                document.getElementById('password-error').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('password-error').style.display = 'none';
+            }
+            
+            if (!isValid) {
+                e.preventDefault();
+            }
+        });
+    </script>
+</body>
+</html>
+```
+
+## 5. Controlador para a página Painel:
+
+`src/main/java/com/engsoft/sgamp/controller/PainelController.java`
+```java
+package com.engsoft.sgamp.controller;
+
+import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+
+@Controller
+public class PainelController {
+
+    @GetMapping("/painel")
+    public String painel(Authentication authentication, Model model) {
+        model.addAttribute("username", authentication.getName());
+        return "painel";
+    }
+}
+```
+
+## 6. Página Painel (simples por enquanto):
+
+`src/main/resources/templates/painel.html`
+```html
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SGAMP - Painel</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+        .welcome {
+            font-size: 20px;
+        }
+        .logout-btn {
+            padding: 8px 15px;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        .option-card {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .option-card:hover {
+            transform: translateY(-5px);
+        }
+        .option-card h3 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="welcome">Bem-vindo, <span th:text="${username}"></span></div>
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="logout-btn">Sair</button>
+        </form>
+    </div>
+    
+    <div class="options">
+        <div class="option-card" onclick="window.location.href='/cadastrar-paciente'">
+            <h3>Cadastrar Paciente</h3>
+            <p>Adicionar novo paciente ao sistema</p>
+        </div>
+        <div class="option-card" onclick="window.location.href='/procurar-paciente'">
+            <h3>Procurar Paciente</h3>
+            <p>Buscar paciente por nome</p>
+        </div>
+        <div class="option-card" onclick="window.location.href='/listar-pacientes'">
+            <h3>Listar Pacientes</h3>
+            <p>Listar pacientes por condições</p>
+        </div>
+    </div>
+</body>
+</html>
+```
+
+## 7. Atualização do application.properties:
+
+`src/main/resources/application.properties`
+```properties
+# Database
+spring.datasource.url=jdbc:mysql://localhost:3306/sgamp
+spring.datasource.username=root
+spring.datasource.password=
+
+# Hibernate
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.format_sql=true
+
+# Thymeleaf
+spring.thymeleaf.cache=false
+spring.thymeleaf.prefix=classpath:/templates/
+spring.thymeleaf.suffix=.html
+spring.thymeleaf.mode=HTML
+spring.thymeleaf.encoding=UTF-8
+
+# Security (para desenvolvimento)
+spring.security.user.name=admin
+spring.security.user.password=admin
+```
+
+## 8. Classe principal (para redirecionamento):
+
+`src/main/java/com/engsoft/sgamp/SgampApplication.java`
+```java
+package com.engsoft.sgamp;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+import org.springframework.context.annotation.Bean;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+@SpringBootApplication
+public class SgampApplication extends SpringBootServletInitializer {
+
+    public static void main(String[] args) {
+        SpringApplication.run(SgampApplication.class, args);
+    }
+
+    @Bean
+    public WebMvcConfigurer forwardToIndex() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addViewControllers(ViewControllerRegistry registry) {
+                registry.addViewController("/").setViewName("forward:/login");
+            }
+        };
+    }
+}
+```
+
+## Fluxo de Funcionamento:
+
+1. O usuário acessa a aplicação e é redirecionado para `/login`
+2. Insere username e senha (que já estão na tabela usuario)
+3. O sistema valida as credenciais usando o AuthService
+4. Se válidas, redireciona para `/painel`
+5. Se inválidas, mostra mensagem de erro na tela de login
+
+## Próximos Passos:
+
+1. Implementar as demais telas do sistema (cadastro de paciente, procura, etc.)
+2. Adicionar mais validações de segurança
+3. Implementar o controle de acesso baseado em roles (MEDICO/TECNICO)
+4. Criar os repositórios e serviços para pacientes e consultas
+
+Esta implementação já fornece um sistema de login funcional com:
+- Autenticação segura usando Spring Security
+- Validação no cliente e no servidor
+- Página de painel básica com opções de navegação
+- Logout funcional
+- Estilização moderna e responsiva
+
