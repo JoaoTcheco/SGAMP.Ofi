@@ -903,3 +903,265 @@ public class AuthController {
     </script>
 </body>
 </html>
+
+
+
+-------------------------------------------------
+-------------------------------------------------------
+---------------------------------------------
+no form metodo forme mudar por no login  <form th:action="@{/login}" method="post">
+
+
+
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SGAMP - Painel</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .header {
+            background-color: #3498db;
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-info span {
+            margin-right: 15px;
+        }
+        
+        .logout-btn {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        
+        .logout-btn:hover {
+            background-color: #c0392b;
+        }
+        
+        .main-content {
+            padding: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .welcome-message {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .option-card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+        
+        .option-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+        }
+        
+        .option-card h2 {
+            color: #2c3e50;
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+        
+        .option-card p {
+            color: #7f8c8d;
+            margin-bottom: 0;
+        }
+        
+        .option-icon {
+            font-size: 40px;
+            margin-bottom: 15px;
+            color: #3498db;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">
+            <h1>SGAMP</h1>
+        </div>
+        <div class="user-info">
+            <span th:text="'Bem-vindo, ' + ${#authentication.name}"></span>
+            <form th:action="@{/logout}" method="post">
+                <button type="submit" class="logout-btn">Sair</button>
+            </form>
+        </div>
+    </div>
+    
+    <div class="main-content">
+        <div class="welcome-message">
+            <h2>Painel Principal</h2>
+            <p>Selecione uma das opções abaixo para gerenciar seus pacientes e consultas.</p>
+        </div>
+        
+        <div class="options-grid">
+            <div class="option-card" onclick="window.location.href='/cadastrar-paciente'">
+                <div class="option-icon">➕</div>
+                <h2>Criar Paciente</h2>
+                <p>Cadastre um novo paciente no sistema com seus dados pessoais e histórico médico.</p>
+            </div>
+            
+            <div class="option-card" onclick="window.location.href='/procurar-paciente'">
+                <div class="option-icon">🔍</div>
+                <h2>Procurar Paciente</h2>
+                <p>Busque pacientes existentes por nome para acessar seus registros e histórico.</p>
+            </div>
+            
+            <div class="option-card" onclick="window.location.href='/listar-pacientes'">
+                <div class="option-icon">📋</div>
+                <h2>Listar Pacientes</h2>
+                <p>Visualize listas de pacientes filtrados por condições específicas como idade, sexo ou diagnóstico.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+
+------------------
+3. Atualização do SecurityConfig
+src/main/java/com/engsoft/sgamp/config/WebSecurityConfig.java
+
+package com.engsoft.sgamp.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+
+@Configuration
+@EnableWebSecurity
+public class WebSecurityConfig {
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+            .authorizeHttpRequests((requests) -> requests
+                .requestMatchers(
+                    "/",
+                    "/login",
+                    "/static/**",
+                    "/css/**",
+                    "/js/**"
+                ).permitAll()
+                .anyRequest().authenticated()
+            )
+            .formLogin((form) -> form
+                .loginPage("/login")
+                .defaultSuccessUrl("/painel", true)
+                .permitAll()
+            )
+            .logout((logout) -> logout
+                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                .logoutSuccessUrl("/login?logout")
+                .permitAll()
+            );
+
+        return http.build();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+}
+
+
+4. Controlador do Painel
+src/main/java/com/engsoft/sgamp/controller/PainelController.java
+
+package com.engsoft.sgamp.controller;
+
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+
+@Controller
+public class PainelController {
+
+    @GetMapping("/painel")
+    public String painel(Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        model.addAttribute("username", auth.getName());
+        return "painel";
+    }
+}
+
+
+5. Atualização do application.properties
+src/main/resources/application.properties
+
+# Configurações do Spring Security
+spring.security.user.name=admin
+spring.security.user.password=admin
+spring.security.user.roles=MEDICO
+
+# Configuração para redirecionamento após logout
+spring.security.logout.redirect-url=/login?logout
+
+
+
+
+
+2. Configuração de logout:
+properties
+spring.security.logout.redirect-url=/login?logout
+Esta linha define:
+
+Para onde o usuário será redirecionado após fazer logout
+
+O parâmetro ?logout pode ser usado para mostrar uma mensagem na tela de login confirmando que o logout foi bem-sucedido
