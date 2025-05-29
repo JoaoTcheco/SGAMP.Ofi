@@ -13,6 +13,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class WebSecurityConfig {
 
+    @SuppressWarnings("unused")
     private final AuthService authService;
 
     public WebSecurityConfig(AuthService authService) {
