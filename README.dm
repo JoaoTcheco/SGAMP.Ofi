@@ -639,6 +639,8 @@ package com.engsoft.sgamp.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -673,7 +675,18 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
+    // Adicione este método para disponibilizar o AuthenticationManager
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
 }
+
+
+
+
+
 ```
 
 ## 3. Controlador para autenticação:
@@ -715,12 +728,8 @@ public class AuthController {
         return "login";
     }
 }
-```
+```..............................
 
-## 4. Tela de Login (HTML com CSS e JS embutido):
-
-`src/main/resources/templates/login.html`
-```html
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -894,241 +903,3 @@ public class AuthController {
     </script>
 </body>
 </html>
-```
-
-## 5. Controlador para a página Painel:
-
-`src/main/java/com/engsoft/sgamp/controller/PainelController.java`
-```java
-package com.engsoft.sgamp.controller;
-
-import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-
-@Controller
-public class PainelController {
-
-    @GetMapping("/painel")
-    public String painel(Authentication authentication, Model model) {
-        model.addAttribute("username", authentication.getName());
-        return "painel";
-    }
-}
-```
-
-## 6. Página Painel (simples por enquanto):
-
-`src/main/resources/templates/painel.html`
-```html
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SGAMP - Painel</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #f5f5f5;
-        }
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #ddd;
-        }
-        .welcome {
-            font-size: 20px;
-        }
-        .logout-btn {
-            padding: 8px 15px;
-            background-color: #dc3545;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .options {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-        }
-        .option-card {
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            text-align: center;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-        .option-card:hover {
-            transform: translateY(-5px);
-        }
-        .option-card h3 {
-            margin-top: 0;
-            color: #2c3e50;
-        }
-    </style>
-</head>
-<body>
-    <div class="header">
-        <div class="welcome">Bem-vindo, <span th:text="${username}"></span></div>
-        <form th:action="@{/logout}" method="post">
-            <button type="submit" class="logout-btn">Sair</button>
-        </form>
-    </div>
-    
-    <div class="options">
-        <div class="option-card" onclick="window.location.href='/cadastrar-paciente'">
-            <h3>Cadastrar Paciente</h3>
-            <p>Adicionar novo paciente ao sistema</p>
-        </div>
-        <div class="option-card" onclick="window.location.href='/procurar-paciente'">
-            <h3>Procurar Paciente</h3>
-            <p>Buscar paciente por nome</p>
-        </div>
-        <div class="option-card" onclick="window.location.href='/listar-pacientes'">
-            <h3>Listar Pacientes</h3>
-            <p>Listar pacientes por condições</p>
-        </div>
-    </div>
-</body>
-</html>
-```
-
-## 7. Atualização do application.properties:
-
-`src/main/resources/application.properties`
-```properties
-# Database
-spring.datasource.url=jdbc:mysql://localhost:3306/sgamp
-spring.datasource.username=root
-spring.datasource.password=
-
-# Hibernate
-spring.jpa.hibernate.ddl-auto=update
-spring.jpa.show-sql=true
-spring.jpa.properties.hibernate.format_sql=true
-
-# Thymeleaf
-spring.thymeleaf.cache=false
-spring.thymeleaf.prefix=classpath:/templates/
-spring.thymeleaf.suffix=.html
-spring.thymeleaf.mode=HTML
-spring.thymeleaf.encoding=UTF-8
-
-# Security (para desenvolvimento)
-spring.security.user.name=admin
-spring.security.user.password=admin
-```
-
-## 8. Classe principal (para redirecionamento):
-
-`src/main/java/com/engsoft/sgamp/SgampApplication.java`
-```java
-package com.engsoft.sgamp;
-
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
-import org.springframework.context.annotation.Bean;
-import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
-@SpringBootApplication
-public class SgampApplication extends SpringBootServletInitializer {
-
-    public static void main(String[] args) {
-        SpringApplication.run(SgampApplication.class, args);
-    }
-
-    @Bean
-    public WebMvcConfigurer forwardToIndex() {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addViewControllers(ViewControllerRegistry registry) {
-                registry.addViewController("/").setViewName("forward:/login");
-            }
-        };
-    }
-}
-```
-
-## Fluxo de Funcionamento:
-
-1. O usuário acessa a aplicação e é redirecionado para `/login`
-2. Insere username e senha (que já estão na tabela usuario)
-3. O sistema valida as credenciais usando o AuthService
-4. Se válidas, redireciona para `/painel`
-5. Se inválidas, mostra mensagem de erro na tela de login
-
-## Próximos Passos:
-
-1. Implementar as demais telas do sistema (cadastro de paciente, procura, etc.)
-2. Adicionar mais validações de segurança
-3. Implementar o controle de acesso baseado em roles (MEDICO/TECNICO)
-4. Criar os repositórios e serviços para pacientes e consultas
-
-Esta implementação já fornece um sistema de login funcional com:
-- Autenticação segura usando Spring Security
-- Validação no cliente e no servidor
-- Página de painel básica com opções de navegação
-- Logout funcional
-- Estilização moderna e responsiva
-
-
-tou a guardar esse web configuration
-package com.engsoft.sgamp.config;
-
-import com.engsoft.sgamp.service.AuthService;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.SecurityFilterChain;
-
-@Configuration
-@EnableWebSecurity
-public class WebSecurityConfig {
-
-    @SuppressWarnings("unused")
-    private final AuthService authService;
-
-    public WebSecurityConfig(AuthService authService) {
-        this.authService = authService;
-    }
-
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-            .authorizeHttpRequests((requests) -> requests
-                .requestMatchers("/", "/login", "/static/**").permitAll()
-                .anyRequest().authenticated()
-            )
-            .formLogin((form) -> form
-                .loginPage("/login")
-                .defaultSuccessUrl("/painel")
-                .permitAll()
-            )
-            .logout((logout) -> logout
-                .logoutSuccessUrl("/login")
-                .permitAll()
-            );
-
-        return http.build();
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-}
