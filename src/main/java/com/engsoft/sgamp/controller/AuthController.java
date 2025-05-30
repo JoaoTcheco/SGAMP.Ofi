@@ -5,11 +5,11 @@ import com.engsoft.sgamp.service.AuthService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
+@RequestMapping("/login")
 public class AuthController {
 
     private final AuthService authService;
@@ -18,29 +18,18 @@ public class AuthController {
         this.authService = authService;
     }
 
-    @GetMapping("/login")
+    @GetMapping
     public String showLoginForm(Model model) {
-        if (!model.containsAttribute("loginDTO")) {
-            model.addAttribute("loginDTO", new LoginDTO());
-        }
+        model.addAttribute("loginDTO", new LoginDTO());
         return "login";
     }
 
-    @PostMapping("/login")
-    public String processLogin(@ModelAttribute LoginDTO loginDTO, 
-                             RedirectAttributes redirectAttributes) {
+    @PostMapping
+    public String login(LoginDTO loginDTO, Model model) {
         if (authService.authenticate(loginDTO)) {
             return "redirect:/painel";
         }
-        
-        redirectAttributes.addFlashAttribute("error", "Usuário ou senha inválidos");
-        redirectAttributes.addFlashAttribute("loginDTO", loginDTO);
-        return "redirect:/login";
-    }
-
-    @GetMapping("/logout")
-    public String logout() {
-        authService.logout();
-        return "redirect:/login?logout";
+        model.addAttribute("error", "Credenciais inválidas");
+        return "login";
     }
 }
