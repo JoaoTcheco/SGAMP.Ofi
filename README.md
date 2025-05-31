@@ -21,84 +21,75 @@ maluco baixar as seguintes extensoes pack for java,,,spring boot, auto close tag
 para run:    mvn spring-boot:run
 
 
-CREATE DATABASE IF NOT EXISTS sgamp CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-USE sgamp;
+BANCO DE DADOS:
 
--- Tabela de usuários (médicos e técnicos)
-CREATE TABLE usuarios (
+Criação do Banco de Dados (MySQL)
+SQL
+CREATE DATABASE IF NOT EXISTS sm_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+USE sm_db;
+
+CREATE TABLE medicos (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    nome VARCHAR(100) NOT NULL,
-    username VARCHAR(50) NOT NULL UNIQUE,
-    senha VARCHAR(255) NOT NULL,
-    role ENUM('TECNICO', 'MEDICO') NOT NULL
+    username VARCHAR(100) NOT NULL UNIQUE,
+    senha VARCHAR(255) NOT NULL,          -- Armazenar hash da senha
+    nome_completo VARCHAR(255) NOT NULL,
+    -- Adicionar outros campos se necessário, como especialidade, CRM, etc.
+    -- Spring Security roles podem ser gerenciadas aqui ou em uma tabela separada (ex: medico_roles)
+    ativo BOOLEAN DEFAULT TRUE
 );
 
--- Tabela de pacientes
 CREATE TABLE pacientes (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    nome_completo VARCHAR(150) NOT NULL,
-    idade INT,
-    sexo ENUM('MASCULINO', 'FEMININO', 'OUTRO'),
-    nacionalidade VARCHAR(50),
-    local_nascimento VARCHAR(100),
-    local_trabalho_residencia VARCHAR(150),
-    historico_locais TEXT,
-    conviventes TEXT,
-    outros_dados TEXT
+    nome_completo VARCHAR(255) NOT NULL,
+    data_nascimento DATE NOT NULL,
+    nif VARCHAR(50) UNIQUE,               -- Número de Identificação Fiscal
+    documento_identidade VARCHAR(100),    -- BI, Passaporte, etc.
+    endereco_completo TEXT,
+    contactos_telefonicos VARCHAR(255),   -- Pode ser mais de um, separado por vírgula ou normalizado
+    estado_civil VARCHAR(50),             -- Ex: SOLTEIRO, CASADO, etc. (Pode ser um ENUM no Java)
+    profissao VARCHAR(150),
+    numero_utente_sns VARCHAR(100) UNIQUE, -- Número do Serviço Nacional de Saúde
+    nome_familiar_responsavel VARCHAR(255),
+    contacto_familiar_responsavel VARCHAR(100),
+    sexo VARCHAR(20),                     -- Ex: MASCULINO, FEMININO (Pode ser um ENUM no Java)
+
+    -- Auditoria
+    data_cadastro DATETIME NOT NULL,
+    data_ultima_atualizacao DATETIME,
+    criado_por_medico_id BIGINT,          -- Quem cadastrou o paciente
+    atualizado_por_medico_id BIGINT,      -- Quem atualizou por último
+
+    FOREIGN KEY (criado_por_medico_id) REFERENCES medicos(id),
+    FOREIGN KEY (atualizado_por_medico_id) REFERENCES medicos(id)
 );
 
--- Tabela de consultas
 CREATE TABLE consultas (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     paciente_id BIGINT NOT NULL,
-    data_consulta DATE NOT NULL,
-    sintomas TEXT,
-    receitas TEXT,
-    observacoes TEXT,
-    assinatura_medico VARCHAR(100),
-    arquivos_exames TEXT,
-    criado_por BIGINT,
-    FOREIGN KEY (paciente_id) REFERENCES pacientes(id) ON DELETE CASCADE,
-    FOREIGN KEY (criado_por) REFERENCES usuarios(id)
+    medico_consulta_id BIGINT NOT NULL,   -- Médico que realizou a consulta
+    data_consulta DATETIME NOT NULL,
+
+    -- Dados Clínicos
+    historia_medica TEXT,
+    sintomas_atuais TEXT,
+    resultados_exames TEXT,               -- Pode ser link para arquivos ou descrição
+    informacoes_situacao_clinica TEXT,    -- Diagnóstico, prognóstico, plano de tratamento
+    medicacao_em_uso TEXT,
+    alergias TEXT,
+    historico_vacinacao TEXT,
+    sinais_vitais TEXT,                   -- Ex: "PA: 120/80 mmHg, FC: 75bpm, Temp: 36.5°C"
+    dados_imagem TEXT,                    -- Links para imagens ou referências
+    dados_geneticos TEXT,
+
+    -- Auditoria
+    data_criacao DATETIME NOT NULL,
+    -- data_ultima_atualizacao DATETIME, -- Se consultas puderem ser editadas
+
+    FOREIGN KEY (paciente_id) REFERENCES pacientes(id) ON DELETE CASCADE, -- Se deletar paciente, deleta consultas
+    FOREIGN KEY (medico_consulta_id) REFERENCES medicos(id)
 );
 
-pom
-
-
-
-aqui todas classes tou a por comencando por 
-
-model;
-
-usuario
-
-package com.engsoft.sgamp.model;
-
-import jakarta.persistence.*;
-import lombok.*;
-
-@Entity
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-public class Usuario {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(nullable = false)
-    private String nome;
-
-    @Column(unique = true, nullable = false)
-    private String username;
-
-    @Column(nullable = false)
-    private String senha;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private Role role;
-
-        
+-- Adicionar Índices para otimizar buscas
+CREATE INDEX idx_paciente_nome ON pacientes(nome_completo);
+CREATE INDEX idx_consulta_paciente_data ON consultas(paciente_id, data_consulta DESC);
