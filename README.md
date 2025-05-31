@@ -93,3 +93,12 @@ CREATE TABLE consultas (
 -- Adicionar Índices para otimizar buscas
 CREATE INDEX idx_paciente_nome ON pacientes(nome_completo);
 CREATE INDEX idx_consulta_paciente_data ON consultas(paciente_id, data_consulta DESC);
+
+
+INSIRIR MEDICO
+
+-- Técnico do sistema adiciona médicos diretamente no banco
+-- Exemplo de inserção de médico (senha deve ser gerada com BCryptPasswordEncoder no Java e colada aqui)
+-- INSERT INTO medicos (username, senha, nome_completo, ativo)
+-- VALUES ('dr.joao', 'SENHA123', 'Dr. João Silva', TRUE);
+-- TIREI CRIPTOGAFICA DO SISTEMA
