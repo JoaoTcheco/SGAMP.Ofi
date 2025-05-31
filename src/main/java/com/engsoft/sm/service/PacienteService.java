@@ -36,13 +36,13 @@ public class PacienteService {
         PacienteDTO dto = new PacienteDTO();
         dto.setNomeCompleto(paciente.getNomeCompleto());
         dto.setDataNascimento(paciente.getDataNascimento());
-        dto.setNif(paciente.getNif());
+        dto.setNuit(paciente.getNuit());
         dto.setDocumentoIdentidade(paciente.getDocumentoIdentidade());
         dto.setEnderecoCompleto(paciente.getEnderecoCompleto());
         dto.setContactosTelefonicos(paciente.getContactosTelefonicos());
         dto.setEstadoCivil(paciente.getEstadoCivil());
         dto.setProfissao(paciente.getProfissao());
-        dto.setNumeroUtenteSNS(paciente.getNumeroUtenteSNS());
+        dto.setNumeroPacienteNP(paciente.getNumeroPacienteNP());
         dto.setNomeFamiliarResponsavel(paciente.getNomeFamiliarResponsavel());
         dto.setContactoFamiliarResponsavel(paciente.getContactoFamiliarResponsavel());
         dto.setSexo(paciente.getSexo());
@@ -78,13 +78,13 @@ public class PacienteService {
         // Mapear dados do DTO para a entidade existente
         pacienteExistente.setNomeCompleto(pacienteDTO.getNomeCompleto());
         pacienteExistente.setDataNascimento(pacienteDTO.getDataNascimento());
-        pacienteExistente.setNif(pacienteDTO.getNif());
+        pacienteExistente.setNuit(pacienteDTO.getNuit());
         pacienteExistente.setDocumentoIdentidade(pacienteDTO.getDocumentoIdentidade());
         pacienteExistente.setEnderecoCompleto(pacienteDTO.getEnderecoCompleto());
         pacienteExistente.setContactosTelefonicos(pacienteDTO.getContactosTelefonicos());
         pacienteExistente.setEstadoCivil(pacienteDTO.getEstadoCivil());
         pacienteExistente.setProfissao(pacienteDTO.getProfissao());
-        pacienteExistente.setNumeroUtenteSNS(pacienteDTO.getNumeroUtenteSNS());
+        pacienteExistente.setNumeroPacienteNP(pacienteDTO.getNumeroPacienteNP());
         pacienteExistente.setNomeFamiliarResponsavel(pacienteDTO.getNomeFamiliarResponsavel());
         pacienteExistente.setContactoFamiliarResponsavel(pacienteDTO.getContactoFamiliarResponsavel());
         pacienteExistente.setSexo(pacienteDTO.getSexo());
@@ -125,13 +125,13 @@ public class PacienteService {
         // Mapear dados do DTO para a entidade
         paciente.setNomeCompleto(pacienteDTO.getNomeCompleto());
         paciente.setDataNascimento(pacienteDTO.getDataNascimento());
-        paciente.setNif(pacienteDTO.getNif());
+        paciente.setNuit(pacienteDTO.getNuit());
         paciente.setDocumentoIdentidade(pacienteDTO.getDocumentoIdentidade());
         paciente.setEnderecoCompleto(pacienteDTO.getEnderecoCompleto());
         paciente.setContactosTelefonicos(pacienteDTO.getContactosTelefonicos());
         paciente.setEstadoCivil(pacienteDTO.getEstadoCivil());
         paciente.setProfissao(pacienteDTO.getProfissao());
-        paciente.setNumeroUtenteSNS(pacienteDTO.getNumeroUtenteSNS());
+        paciente.setNumeroPacienteNP(pacienteDTO.getNumeroPacienteNP());
         paciente.setNomeFamiliarResponsavel(pacienteDTO.getNomeFamiliarResponsavel());
         paciente.setContactoFamiliarResponsavel(pacienteDTO.getContactoFamiliarResponsavel());
         paciente.setSexo(pacienteDTO.getSexo());

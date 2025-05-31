@@ -37,7 +37,7 @@
                         <th>ID</th>
                         <th>Nome Completo</th>
                         <th>Data de Nascimento</th>
-                        <th>NIF</th>
+                        <th>NUIT</th>
                         <th>Ações</th>
                     </tr>
                 </thead>
@@ -46,7 +46,7 @@
                         <td th:text="${paciente.id}">1</td>
                         <td th:text="${paciente.nomeCompleto}">Nome do Paciente</td>
                         <td th:text="${#temporals.format(paciente.dataNascimento, 'dd/MM/yyyy')}">01/01/1990</td>
-                        <td th:text="${paciente.nif}">123456789</td>
+                        <td th:text="${paciente.nuit}">123456789</td>
                         <td>
                             <a th:href="@{/pacientes/{id}(id=${paciente.id})}" class="btn btn-sm btn-info">Ver Detalhes</a>
                         </td>

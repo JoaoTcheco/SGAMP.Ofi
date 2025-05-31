@@ -79,7 +79,7 @@
                             <a th:href="@{/pacientes/listar(page=${paginaPacientes.number}, size=${paginaPacientes.size}, sort='dataNascimento', direction=${sort == 'dataNascimento' && direction == 'ASC' ? 'DESC' : 'ASC'}, nome=${filtro.nome}, idadeMinima=${filtro.idadeMinima}, idadeMaxima=${filtro.idadeMaxima}, sexo=${filtro.sexo})}">Data Nasc.</a>
                         </th>
                         <th>Sexo</th>
-                        <th>NIF</th>
+                        <th>NUIT</th>
                         <th>Ações</th>
                     </tr>
                 </thead>
@@ -89,7 +89,7 @@
                         <td th:text="${paciente.nomeCompleto}">Nome Paciente</td>
                         <td th:text="${#temporals.format(paciente.dataNascimento, 'dd/MM/yyyy')}">01/01/1990</td>
                         <td th:text="${paciente.sexo}">Masculino</td>
-                        <td th:text="${paciente.nif}">123456789</td>
+                        <td th:text="${paciente.nuit}">123456789</td>
                         <td class="action-buttons">
                             <a th:href="@{/pacientes/{id}(id=${paciente.id})}" class="btn btn-sm btn-info">Ver Detalhes</a>
 

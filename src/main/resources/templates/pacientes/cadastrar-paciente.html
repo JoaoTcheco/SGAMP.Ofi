@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Cadastrar Paciente - Sistema Médico</title>
+    <title th:text="${editMode == true} ? 'Editar Paciente - Sistema Médico' : 'Cadastrar Paciente - Sistema Médico'">Cadastrar Paciente - Sistema Médico</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body { padding-top: 20px; background-color: #f8f9fa; }
@@ -15,19 +15,24 @@
 <body>
     <div class="container">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2>Cadastrar Novo Paciente</h2>
-            <a th:href="@{/painel}" class="btn btn-outline-secondary">Voltar ao Painel</a>
+            <h2 th:text="${editMode == true} ? 'Editar Paciente' : 'Cadastrar Novo Paciente'">Cadastrar Paciente</h2>
+            <a th:href="${editMode == true && pacienteDTO != null && pacienteDTO.id != null} ? @{/pacientes/{id}(id=${pacienteDTO.id})} : @{/painel}"
+               class="btn btn-outline-secondary"
+               th:text="${editMode == true} ? 'Cancelar Edição' : 'Voltar ao Painel'">Voltar</a>
         </div>
 
         <div th:if="${mensagemErro}" class="alert alert-danger" role="alert" th:text="${mensagemErro}">
             Erro ao processar.
         </div>
-         <div th:if="${mensagemSucesso}" class="alert alert-success" role="alert" th:text="${mensagemSucesso}">
+        <div th:if="${mensagemSucesso}" class="alert alert-success" role="alert" th:text="${mensagemSucesso}">
             Operação bem sucedida.
         </div>
 
+        <form th:action="${editMode == true && pacienteDTO != null && pacienteDTO.id != null} ? @{/pacientes/atualizar/{id}(id=${pacienteDTO.id})} : @{/pacientes/salvar}"
+              th:object="${pacienteDTO}" method="post">
 
-        <form th:action="@{/pacientes/salvar}" th:object="${pacienteDTO}" method="post">
+            <input type="hidden" th:if="${editMode == true && pacienteDTO != null}" th:field="*{id}" />
+
             <h4>Dados Pessoais</h4>
             <hr>
             <div class="row mb-3">
@@ -58,9 +63,9 @@
 
             <div class="row mb-3">
                 <div class="col-md-6">
-                    <label for="nif" class="form-label">NIF (Número de Identificação Fiscal):</label>
-                    <input type="text" id="nif" th:field="*{nif}" class="form-control" />
-                    <div th:if="${#fields.hasErrors('nif')}" th:errors="*{nif}" class="error-message">Erro no NIF</div>
+                    <label for="nuit" class="form-label">NUIT (Número Único de Identificação Tributária):</label>
+                    <input type="text" id="nuit" th:field="*{nuit}" class="form-control" />
+                    <div th:if="${#fields.hasErrors('nuit')}" th:errors="*{nuit}" class="error-message">Erro no NUIT</div>
                 </div>
                 <div class="col-md-6">
                     <label for="documentoIdentidade" class="form-label">Documento de Identidade:</label>
@@ -103,9 +108,9 @@
                     <div th:if="${#fields.hasErrors('profissao')}" th:errors="*{profissao}" class="error-message">Erro na profissão</div>
                 </div>
                 <div class="col-md-6">
-                    <label for="numeroUtenteSNS" class="form-label">Número de Utente SNS:</label>
-                    <input type="text" id="numeroUtenteSNS" th:field="*{numeroUtenteSNS}" class="form-control" />
-                    <div th:if="${#fields.hasErrors('numeroUtenteSNS')}" th:errors="*{numeroUtenteSNS}" class="error-message">Erro no número SNS</div>
+                    <label for="numeroPacienteNP" class="form-label">Número de Paciente (NP):</label>
+                    <input type="text" id="numeroPacienteNP" th:field="*{numeroPacienteNP}" class="form-control" />
+                    <div th:if="${#fields.hasErrors('numeroPacienteNP')}" th:errors="*{numeroPacienteNP}" class="error-message">Erro no número NP</div>
                 </div>
             </div>
 
@@ -125,29 +130,9 @@
             </div>
 
             <div class="mt-4">
-                <button type="submit" class="btn btn-primary btn-custom">Salvar Paciente</button>
-                <a th:href="@{/painel}" class="btn btn-secondary btn-custom">Cancelar</a>
-            </div>
-        </form>
-    </div>
-
-    <div class="container">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 th:text="${editMode == true} ? 'Editar Paciente' : 'Cadastrar Novo Paciente'">Cadastrar Paciente</h2>
-            <a th:href="${editMode == true} ? @{/pacientes/{id}(id=${pacienteDTO.id})} : @{/painel}"
-               class="btn btn-outline-secondary"
-               th:text="${editMode == true} ? 'Cancelar Edição' : 'Voltar ao Painel'">Voltar</a>
-        </div>
-    
-        <form th:action="${editMode == true} ? @{/pacientes/atualizar/{id}(id=${pacienteDTO.id})} : @{/pacientes/salvar}"
-              th:object="${pacienteDTO}" method="post">
-    
-            <input type="hidden" th:if="${editMode == true}" th:field="*{id}" />
-    
-            <div class="mt-4">
                 <button type="submit" class="btn btn-primary btn-custom"
                         th:text="${editMode == true} ? 'Salvar Alterações' : 'Salvar Paciente'">Salvar</button>
-                <a th:href="${editMode == true} ? @{/pacientes/{id}(id=${pacienteDTO.id})} : @{/painel}"
+                <a th:href="${editMode == true && pacienteDTO != null && pacienteDTO.id != null} ? @{/pacientes/{id}(id=${pacienteDTO.id})} : @{/painel}"
                    class="btn btn-secondary btn-custom"
                    th:text="${editMode == true} ? 'Cancelar' : 'Cancelar Cadastro'">Cancelar</a>
             </div>

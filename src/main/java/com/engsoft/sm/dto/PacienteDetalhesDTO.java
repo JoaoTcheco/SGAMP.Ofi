@@ -23,13 +23,13 @@ public class PacienteDetalhesDTO {
     private Long id;
     private String nomeCompleto;
     private LocalDate dataNascimento;
-    private String nif;
+    private String nuit;
     private String documentoIdentidade;
     private String enderecoCompleto;
     private String contactosTelefonicos;
     private String estadoCivil;
     private String profissao;
-    private String numeroUtenteSNS;
+    private String numeroPacienteNP;
     private String nomeFamiliarResponsavel;
     private String contactoFamiliarResponsavel;
     private String sexo;

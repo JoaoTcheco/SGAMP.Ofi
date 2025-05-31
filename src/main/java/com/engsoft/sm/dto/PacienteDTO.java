@@ -36,8 +36,8 @@ public class PacienteDTO {
     @DateTimeFormat(pattern = "yyyy-MM-dd") // Ajuda o Spring a converter String para LocalDate
     private LocalDate dataNascimento;
 
-    @Size(max = 50, message = "NIF deve ter no máximo 50 caracteres.")
-    private String nif; // Não obrigatório, mas com limite de tamanho
+    @Size(max = 50, message = "NUIT deve ter no máximo 50 caracteres.")
+    private String nuit; // Não obrigatório, mas com limite de tamanho
 
     @Size(max = 100, message = "Documento de identidade deve ter no máximo 100 caracteres.")
     private String documentoIdentidade;
@@ -54,8 +54,8 @@ public class PacienteDTO {
     @Size(max = 150, message = "Profissão deve ter no máximo 150 caracteres.")
     private String profissao;
 
-    @Size(max = 100, message = "Número de utente do SNS deve ter no máximo 100 caracteres.")
-    private String numeroUtenteSNS;
+    @Size(max = 100, message = "Número de paciente do NP deve ter no máximo 100 caracteres.")
+    private String numeroPacienteNP;
 
     @Size(max = 255, message = "Nome do familiar/responsável deve ter no máximo 255 caracteres.")
     private String nomeFamiliarResponsavel;

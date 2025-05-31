@@ -24,20 +24,20 @@ public interface PacienteRepository extends JpaRepository<Paciente, Long>, JpaSp
     List<Paciente> findByNomeCompletoContainingIgnoreCase(String nome);
 
     /**
-     * Busca um paciente pelo seu Número de Identificação Fiscal (NIF).
+     * Busca um paciente pelo seu Número de Identificação Fiscal (NUIT).
      *
-     * @param nif O NIF a ser buscado.
+     * @param nuit O NUIT a ser buscado.
      * @return Um Optional contendo o Paciente se encontrado.
      */
-    Optional<Paciente> findByNif(String nif);
+    Optional<Paciente> findBynuit(String nuit);
 
     /**
-     * Busca um paciente pelo seu Número de Utente do SNS.
+     * Busca um paciente pelo seu Número de Paciente do NP.
      *
-     * @param numeroUtenteSNS O número de utente do SNS a ser buscado.
+     * @param numeroPacienteNP O número de Paciente do NP a ser buscado.
      * @return Um Optional contendo o Paciente se encontrado.
      */
-    Optional<Paciente> findByNumeroUtenteSNS(String numeroUtenteSNS);
+    Optional<Paciente> findBynumeroPacienteNP(String numeroPacienteNP);
 
     // Para a funcionalidade de "listar pacientes por várias condições",
     // usaremos JpaSpecificationExecutor, que permite criar queries dinâmicas

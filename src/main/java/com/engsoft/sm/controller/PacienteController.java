@@ -171,13 +171,13 @@ public class PacienteController {
 
         paciente.setNomeCompleto(pacienteDTO.getNomeCompleto());
         paciente.setDataNascimento(pacienteDTO.getDataNascimento());
-        paciente.setNif(pacienteDTO.getNif());
+        paciente.setNuit(pacienteDTO.getNuit());
         paciente.setDocumentoIdentidade(pacienteDTO.getDocumentoIdentidade());
         paciente.setEnderecoCompleto(pacienteDTO.getEnderecoCompleto());
         paciente.setContactosTelefonicos(pacienteDTO.getContactosTelefonicos());
         paciente.setEstadoCivil(pacienteDTO.getEstadoCivil());
         paciente.setProfissao(pacienteDTO.getProfissao());
-        paciente.setNumeroUtenteSNS(pacienteDTO.getNumeroUtenteSNS());
+        paciente.setNumeroPacienteNP(pacienteDTO.getNumeroPacienteNP());
         paciente.setNomeFamiliarResponsavel(pacienteDTO.getNomeFamiliarResponsavel());
         paciente.setContactoFamiliarResponsavel(pacienteDTO.getContactoFamiliarResponsavel());
         paciente.setSexo(pacienteDTO.getSexo());

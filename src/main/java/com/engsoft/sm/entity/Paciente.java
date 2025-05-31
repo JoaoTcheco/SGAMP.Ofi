@@ -32,8 +32,8 @@ public class Paciente {
     @Column(name = "data_nascimento", nullable = false)
     private LocalDate dataNascimento; // Apenas data, sem hora
 
-    @Column(length = 50, unique = true) // NIF pode ser único
-    private String nif;
+    @Column(length = 50, unique = true) // NUIT pode ser único
+    private String nuit;
 
     @Column(name = "documento_identidade", length = 100)
     private String documentoIdentidade;
@@ -50,8 +50,8 @@ public class Paciente {
     @Column(length = 150)
     private String profissao;
 
-    @Column(name = "numero_utente_sns", length = 100, unique = true) // Pode ser único
-    private String numeroUtenteSNS;
+    @Column(name = "numero_paciente_np", length = 100, unique = true) // Pode ser único
+    private String numeroPacienteNP;
 
     @Column(name = "nome_familiar_responsavel", length = 255)
     private String nomeFamiliarResponsavel;
