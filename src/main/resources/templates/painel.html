@@ -1,152 +1,95 @@
-
-
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SGAMP - Painel</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f2f5;
-            margin: 0;
-            padding: 0;
-        }
-        
-        .header {
-            background-color: #3498db;
-            color: white;
-            padding: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        
-        .logo {
-            display: flex;
-            align-items: center;
-        }
-        
-        .logo h1 {
-            margin: 0;
-            font-size: 24px;
-        }
-        
-        .user-info {
-            display: flex;
-            align-items: center;
-        }
-        
-        .user-info span {
-            margin-right: 15px;
-        }
-        
-        .logout-btn {
-            background-color: #e74c3c;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: 500;
-        }
-        
-        .logout-btn:hover {
-            background-color: #c0392b;
-        }
-        
-        .main-content {
-            padding: 30px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        
-        .welcome-message {
-            background-color: white;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 30px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
-        
-        .options-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-        }
-        
-        .option-card {
-            background-color: white;
-            border-radius: 8px;
-            padding: 25px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            transition: transform 0.3s, box-shadow 0.3s;
-            cursor: pointer;
-        }
-        
-        .option-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
-        }
-        
-        .option-card h2 {
-            color: #2c3e50;
-            margin-top: 0;
-            margin-bottom: 10px;
-        }
-        
-        .option-card p {
-            color: #7f8c8d;
-            margin-bottom: 0;
-        }
-        
-        .option-icon {
-            font-size: 40px;
-            margin-bottom: 15px;
-            color: #3498db;
-        }
-    </style>
+<html xmlns:th="http://www.thymeleaf.org"
+xmlns:sec="http://www.thymeleaf.org/extras/spring-security"> <head>
+<meta charset="UTF-8">
+<title>Painel - Sistema Médico</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+body { padding-top: 50px; background-color: #f4f7f6; }
+.container { max-width: 960px; }
+.navbar { margin-bottom: 20px; }
+.card-link { text-decoration: none; color: inherit; }
+.card { margin-bottom: 20px; transition: transform .2s; }
+.card:hover { transform: scale(1.03); }
+.welcome-message { margin-bottom: 30px; }
+</style>
 </head>
 <body>
-    <div class="header">
-        <div class="logo">
-            <h1>SGAMP</h1>
-        </div>
-        <div class="user-info">
-            <span th:text="'Bem-vindo, ' + ${#authentication.name}"></span>
-            <form th:action="@{/logout}" method="post">
-                <button type="submit" class="logout-btn">Sair</button>
-            </form>
-        </div>
-    </div>
-    
-    <div class="main-content">
-        <div class="welcome-message">
-            <h2>Painel Principal</h2>
-            <p>Selecione uma das opções abaixo para gerenciar seus pacientes e consultas.</p>
-        </div>
-        
-        <div class="options-grid">
-            <div class="option-card" onclick="window.location.href='/cadastrar-paciente'">
-                <div class="option-icon">➕</div>
-                <h2>Criar Paciente</h2>
-                <p>Cadastre um novo paciente no sistema com seus dados pessoais e histórico médico.</p>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+<div class="container-fluid">
+<a class="navbar-brand" th:href="@{/painel}">Sistema Médico</a>
+<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+<span class="navbar-toggler-icon"></span>
+</button>
+<div class="collapse navbar-collapse" id="navbarNav">
+<ul class="navbar-nav ms-auto">
+<li class="nav-item" sec:authorize="isAuthenticated()">
+<span class="navbar-text me-3">
+Bem-vindo(a), <strong th:text="${nomeUsuarioLogado ?: principal.username}">Usuário</strong>!
+</span>
+</li>
+<li class="nav-item">
+<form th:action="@{/logout}" method="post" class="d-inline">
+<button type="submit" class="btn btn-outline-light">Sair</button>
+</form>
+</li>
+</ul>
+</div>
+</div>
+</nav>
+
+        <div class="container mt-5 pt-3">
+            <div class="text-center welcome-message">
+                <h2>Painel de Controle</h2>
+                <p class="lead">Selecione uma das opções abaixo para gerenciar os arquivos médicos.</p>
             </div>
-            
-            <div class="option-card" onclick="window.location.href='/procurar-paciente'">
-                <div class="option-icon">🔍</div>
-                <h2>Procurar Paciente</h2>
-                <p>Busque pacientes existentes por nome para acessar seus registros e histórico.</p>
+
+            <div th:if="${param.pacienteCriado}" class="alert alert-success" role="alert">
+                Paciente cadastrado com sucesso!
             </div>
-            
-            <div class="option-card" onclick="window.location.href='/listar-pacientes'">
-                <div class="option-icon">📋</div>
-                <h2>Listar Pacientes</h2>
-                <p>Visualize listas de pacientes filtrados por condições específicas como idade, sexo ou diagnóstico.</p>
+             <div th:if="${param.consultaCriada}" class="alert alert-success" role="alert">
+                Consulta salva com sucesso!
+            </div>
+
+
+            <div class="row text-center">
+                <div class="col-md-4">
+                    <a th:href="@{/pacientes/novo}" class="card-link">
+                        <div class="card shadow-sm">
+                            <div class="card-body">
+                                <h5 class="card-title">Cadastrar Paciente</h5>
+                                <p class="card-text">Adicionar um novo paciente ao sistema.</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-4">
+                    <a th:href="@{/pacientes/procurar}" class="card-link">
+                        <div class="card shadow-sm">
+                            <div class="card-body">
+                                <h5 class="card-title">Procurar Paciente</h5>
+                                <p class="card-text">Buscar um paciente existente por nome.</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-4">
+                     <a th:href="@{/pacientes/listar}" class="card-link">
+                        <div class="card shadow-sm">
+                            <div class="card-body">
+                                <h5 class="card-title">Listar Pacientes</h5>
+                                <p class="card-text">Visualizar e filtrar a lista de pacientes.</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
             </div>
         </div>
-    </div>
-</body>
-</html>
+
+        <footer class="text-center mt-5 py-3 bg-light">
+            <p>&copy; <span th:text="${#dates.year(#dates.createNow())}">2025</span> Sistema de Gestão de Arquivos Médicos. Todos os direitos reservados.</p>
+        </footer>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
+    </html>

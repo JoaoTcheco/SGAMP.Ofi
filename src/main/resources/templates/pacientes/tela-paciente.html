@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${paciente.nomeCompleto} + ' - Detalhes do Paciente - Sistema Médico'">Detalhes do Paciente</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { padding-top: 20px; background-color: #f8f9fa; }
+        .container { max-width: 1000px; background-color: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .section-title { border-bottom: 2px solid #0d6efd; padding-bottom: 10px; margin-bottom: 20px; color: #0d6efd; }
+        .dl-horizontal dt { float: left; width: 200px; overflow: hidden; clear: left; text-align: right; text-overflow: ellipsis; white-space: nowrap; font-weight: bold; margin-bottom: 5px;}
+        .dl-horizontal dd { margin-left: 220px; margin-bottom: 5px;}
+        .consulta-card { margin-bottom: 15px; border-left: 5px solid #17a2b8; }
+        .error-message { color: red; font-size: 0.9em; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 th:text="${paciente.nomeCompleto}">Nome do Paciente</h2>
+            <a th:href="@{/painel}" class="btn btn-outline-secondary">Voltar ao Painel</a>
+        </div>
+
+        <div th:if="${mensagemGlobalSucesso}" class="alert alert-success" th:text="${mensagemGlobalSucesso}"></div>
+        <div th:if="${mensagemGlobalErro}" class="alert alert-danger" th:text="${mensagemGlobalErro}"></div>
+
+        <h4 class="section-title">Dados Pessoais</h4>
+        <dl class="dl-horizontal">
+            <dt>ID do Paciente:</dt>
+            <dd th:text="${paciente.id}">001</dd>
+
+            <dt>Data de Nascimento:</dt>
+            <dd th:text="${#temporals.format(paciente.dataNascimento, 'dd/MM/yyyy')}">01/01/1990</dd>
+
+            <dt>Sexo:</dt>
+            <dd th:text="${paciente.sexo}">Masculino</dd>
+
+            <dt>NIF:</dt>
+            <dd th:text="${paciente.nif ?: 'Não informado'}">123456789</dd>
+
+            <dt>Documento de Identidade:</dt>
+            <dd th:text="${paciente.documentoIdentidade ?: 'Não informado'}">987654321</dd>
+
+            <dt>Endereço Completo:</dt>
+            <dd th:text="${paciente.enderecoCompleto ?: 'Não informado'}">Rua Exemplo, 123</dd>
+
+            <dt>Contatos Telefônicos:</dt>
+            <dd th:text="${paciente.contactosTelefonicos ?: 'Não informado'}">(11) 99999-9999</dd>
+
+            <dt>Estado Civil:</dt>
+            <dd th:text="${paciente.estadoCivil ?: 'Não informado'}">Solteiro(a)</dd>
+
+            <dt>Profissão:</dt>
+            <dd th:text="${paciente.profissao ?: 'Não informado'}">Engenheiro</dd>
+
+            <dt>Número de Utente SNS:</dt>
+            <dd th:text="${paciente.numeroUtenteSNS ?: 'Não informado'}">SNS123</dd>
+
+            <dt>Familiar/Responsável:</dt>
+            <dd th:text="${paciente.nomeFamiliarResponsavel ?: 'Não informado'}">Nome do Familiar</dd>
+
+            <dt>Contato do Familiar:</dt>
+            <dd th:text="${paciente.contactoFamiliarResponsavel ?: 'Não informado'}">(11) 88888-8888</dd>
+
+            <dt>Data de Cadastro:</dt>
+            <dd th:text="${#temporals.format(paciente.dataCadastro, 'dd/MM/yyyy HH:mm')}">01/01/2023 10:00</dd>
+
+            <dt>Cadastrado por:</dt>
+            <dd th:text="${paciente.criadoPorMedico?.nomeCompleto ?: 'Sistema'}">Dr. Admin</dd> </dl>
+
+            <a th:href="@{/pacientes/editar/{id}(id=${paciente.id})}" class="btn btn-warning mb-3">Editar Dados Pessoais</a>
+            <hr class="my-4">
+
+        <hr class="my-4">
+
+        <h4 class="section-title">Histórico de Consultas</h4>
+        <div th:if="${#lists.isEmpty(consultas)}">
+            <p class="text-muted">Nenhuma consulta registrada para este paciente.</p>
+        </div>
+        <div th:unless="${#lists.isEmpty(consultas)}" class="accordion" id="accordionConsultas">
+            <div th:each="consulta, iterStat : ${consultas}" class="accordion-item consulta-card">
+                <h2 class="accordion-header" th:id="'heading' + ${iterStat.index}">
+                    <button class="accordion-button" th:classappend="${iterStat.index == 0} ? '' : 'collapsed'" type="button" data-bs-toggle="collapse" th:data-bs-target="'#collapse' + ${iterStat.index}" th:aria-expanded="${iterStat.index == 0} ? 'true' : 'false'" th:aria-controls="'collapse' + ${iterStat.index}">
+                        Consulta de <strong class="mx-1" th:text="${#temporals.format(consulta.dataConsulta, 'dd/MM/yyyy HH:mm')}"></strong>
+                        realizada por <strong class="ms-1" th:text="${consulta.medicoConsulta?.nomeCompleto}">Dr. X</strong>
+                    </button>
+                </h2>
+                <div th:id="'collapse' + ${iterStat.index}" class="accordion-collapse collapse" th:classappend="${iterStat.index == 0} ? 'show' : ''" th:aria-labelledby="'heading' + ${iterStat.index}" data-bs-parent="#accordionConsultas">
+                    <div class="accordion-body">
+                        <dl class="dl-horizontal">
+                            <dt>Sintomas Atuais:</dt><dd th:text="${consulta.sintomasAtuais ?: 'Não informado'}"></dd>
+                            <dt>História Médica Relevante:</dt><dd th:text="${consulta.historiaMedica ?: 'Não informado'}"></dd>
+                            <dt>Resultados de Exames:</dt><dd th:text="${consulta.resultadosExames ?: 'Não informado'}"></dd>
+                            <dt>Situação Clínica (Diag./Plano):</dt><dd th:text="${consulta.informacoesSituacaoClinica ?: 'Não informado'}"></dd>
+                            <dt>Medicação em Uso:</dt><dd th:text="${consulta.medicacaoEmUso ?: 'Não informado'}"></dd>
+                            <dt>Alergias:</dt><dd th:text="${consulta.alergias ?: 'Não informado'}"></dd>
+                            <dt>Histórico de Vacinação:</dt><dd th:text="${consulta.historicoVacinacao ?: 'Não informado'}"></dd>
+                            <dt>Sinais Vitais:</dt><dd th:text="${consulta.sinaisVitais ?: 'Não informado'}"></dd>
+                            <dt>Dados de Imagem:</dt><dd th:text="${consulta.dadosImagem ?: 'Não informado'}"></dd>
+                            <dt>Dados Genéticos:</dt><dd th:text="${consulta.dadosGeneticos ?: 'Não informado'}"></dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr class="my-4">
+
+        <h4 class="section-title">Registrar Nova Consulta</h4>
+        <form th:action="@{/consultas/paciente/{pacienteId}/salvar(pacienteId=${paciente.id})}" th:object="${novaConsultaDTO}" method="post">
+            <div class="mb-3">
+                <label for="dataConsulta" class="form-label">Data e Hora da Consulta:</label>
+                <input type="datetime-local" id="dataConsulta" th:field="*{dataConsulta}" class="form-control" required/>
+                <div th:if="${#fields.hasErrors('dataConsulta')}" th:errors="*{dataConsulta}" class="error-message">Erro</div>
+            </div>
+
+            <div class="mb-3">
+                <label for="sintomasAtuais" class="form-label">Sintomas Atuais:</label>
+                <textarea id="sintomasAtuais" th:field="*{sintomasAtuais}" class="form-control" rows="3"></textarea>
+                <div th:if="${#fields.hasErrors('sintomasAtuais')}" th:errors="*{sintomasAtuais}" class="error-message">Erro</div>
+            </div>
+
+            <div class="mb-3">
+                <label for="historiaMedica" class="form-label">História Médica (relevante para esta consulta):</label>
+                <textarea id="historiaMedica" th:field="*{historiaMedica}" class="form-control" rows="3"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="resultadosExames" class="form-label">Resultados de Exames:</label>
+                <textarea id="resultadosExames" th:field="*{resultadosExames}" class="form-control" rows="2"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="informacoesSituacaoClinica" class="form-label">Informações sobre a Situação Clínica (Diagnóstico, Prognóstico, Plano de Tratamento):</label>
+                <textarea id="informacoesSituacaoClinica" th:field="*{informacoesSituacaoClinica}" class="form-control" rows="4"></textarea>
+                <div th:if="${#fields.hasErrors('informacoesSituacaoClinica')}" th:errors="*{informacoesSituacaoClinica}" class="error-message">Erro</div>
+            </div>
+
+             <div class="mb-3">
+                <label for="medicacaoEmUso" class="form-label">Medicação em Uso:</label>
+                <textarea id="medicacaoEmUso" th:field="*{medicacaoEmUso}" class="form-control" rows="2"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="alergias" class="form-label">Alergias:</label>
+                <textarea id="alergias" th:field="*{alergias}" class="form-control" rows="2"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="historicoVacinacao" class="form-label">Histórico de Vacinação (relevante):</label>
+                <textarea id="historicoVacinacao" th:field="*{historicoVacinacao}" class="form-control" rows="2"></textarea>
+            </div>
+
+             <div class="mb-3">
+                <label for="sinaisVitais" class="form-label">Sinais Vitais:</label>
+                <input type="text" id="sinaisVitais" th:field="*{sinaisVitais}" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label for="dadosImagem" class="form-label">Dados de Imagem (links/referências):</label>
+                <textarea id="dadosImagem" th:field="*{dadosImagem}" class="form-control" rows="2"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="dadosGeneticos" class="form-label">Dados Genéticos (se aplicável):</label>
+                <textarea id="dadosGeneticos" th:field="*{dadosGeneticos}" class="form-control" rows="2"></textarea>
+            </div>
+
+
+            <div class="mt-4">
+                <button type="submit" class="btn btn-primary">Salvar Nova Consulta</button>
+            </div>
+        </form>
+
+    </div>
+
+    <footer class="text-center mt-5 py-3 bg-light">
+         <p>&copy; <span th:text="${#dates.year(#dates.createNow())}">2025</span> Sistema de Gestão de Arquivos Médicos.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

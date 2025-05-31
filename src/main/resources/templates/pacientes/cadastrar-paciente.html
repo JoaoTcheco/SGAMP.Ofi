@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Cadastrar Paciente - Sistema Médico</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { padding-top: 20px; background-color: #f8f9fa; }
+        .container { max-width: 800px; background-color: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .form-label { font-weight: 500; }
+        .btn-custom { margin-right: 10px; }
+        .error-message { color: red; font-size: 0.9em; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Cadastrar Novo Paciente</h2>
+            <a th:href="@{/painel}" class="btn btn-outline-secondary">Voltar ao Painel</a>
+        </div>
+
+        <div th:if="${mensagemErro}" class="alert alert-danger" role="alert" th:text="${mensagemErro}">
+            Erro ao processar.
+        </div>
+         <div th:if="${mensagemSucesso}" class="alert alert-success" role="alert" th:text="${mensagemSucesso}">
+            Operação bem sucedida.
+        </div>
+
+
+        <form th:action="@{/pacientes/salvar}" th:object="${pacienteDTO}" method="post">
+            <h4>Dados Pessoais</h4>
+            <hr>
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <label for="nomeCompleto" class="form-label">Nome Completo:</label>
+                    <input type="text" id="nomeCompleto" th:field="*{nomeCompleto}" class="form-control" />
+                    <div th:if="${#fields.hasErrors('nomeCompleto')}" th:errors="*{nomeCompleto}" class="error-message">Erro no nome</div>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="dataNascimento" class="form-label">Data de Nascimento:</label>
+                    <input type="date" id="dataNascimento" th:field="*{dataNascimento}" class="form-control" />
+                    <div th:if="${#fields.hasErrors('dataNascimento')}" th:errors="*{dataNascimento}" class="error-message">Erro na data</div>
+                </div>
+                <div class="col-md-6">
+                    <label for="sexo" class="form-label">Sexo:</label>
+                    <select id="sexo" th:field="*{sexo}" class="form-select">
+                        <option value="">Selecione...</option>
+                        <option value="Masculino">Masculino</option>
+                        <option value="Feminino">Feminino</option>
+                        <option value="Outro">Outro</option>
+                    </select>
+                    <div th:if="${#fields.hasErrors('sexo')}" th:errors="*{sexo}" class="error-message">Erro no sexo</div>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="nif" class="form-label">NIF (Número de Identificação Fiscal):</label>
+                    <input type="text" id="nif" th:field="*{nif}" class="form-control" />
+                    <div th:if="${#fields.hasErrors('nif')}" th:errors="*{nif}" class="error-message">Erro no NIF</div>
+                </div>
+                <div class="col-md-6">
+                    <label for="documentoIdentidade" class="form-label">Documento de Identidade:</label>
+                    <input type="text" id="documentoIdentidade" th:field="*{documentoIdentidade}" class="form-control" />
+                    <div th:if="${#fields.hasErrors('documentoIdentidade')}" th:errors="*{documentoIdentidade}" class="error-message">Erro no documento</div>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="enderecoCompleto" class="form-label">Endereço Completo:</label>
+                <textarea id="enderecoCompleto" th:field="*{enderecoCompleto}" class="form-control" rows="3"></textarea>
+                <div th:if="${#fields.hasErrors('enderecoCompleto')}" th:errors="*{enderecoCompleto}" class="error-message">Erro no endereço</div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="contactosTelefonicos" class="form-label">Contatos Telefônicos:</label>
+                    <input type="text" id="contactosTelefonicos" th:field="*{contactosTelefonicos}" class="form-control" />
+                    <div th:if="${#fields.hasErrors('contactosTelefonicos')}" th:errors="*{contactosTelefonicos}" class="error-message">Erro nos contatos</div>
+                </div>
+                <div class="col-md-6">
+                    <label for="estadoCivil" class="form-label">Estado Civil:</label>
+                    <select id="estadoCivil" th:field="*{estadoCivil}" class="form-select">
+                        <option value="">Selecione...</option>
+                        <option value="Solteiro(a)">Solteiro(a)</option>
+                        <option value="Casado(a)">Casado(a)</option>
+                        <option value="Divorciado(a)">Divorciado(a)</option>
+                        <option value="Viúvo(a)">Viúvo(a)</option>
+                        <option value="União Estável">União Estável</option>
+                        <option value="Outro">Outro</option>
+                    </select>
+                    <div th:if="${#fields.hasErrors('estadoCivil')}" th:errors="*{estadoCivil}" class="error-message">Erro no estado civil</div>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="profissao" class="form-label">Profissão:</label>
+                    <input type="text" id="profissao" th:field="*{profissao}" class="form-control" />
+                    <div th:if="${#fields.hasErrors('profissao')}" th:errors="*{profissao}" class="error-message">Erro na profissão</div>
+                </div>
+                <div class="col-md-6">
+                    <label for="numeroUtenteSNS" class="form-label">Número de Utente SNS:</label>
+                    <input type="text" id="numeroUtenteSNS" th:field="*{numeroUtenteSNS}" class="form-control" />
+                    <div th:if="${#fields.hasErrors('numeroUtenteSNS')}" th:errors="*{numeroUtenteSNS}" class="error-message">Erro no número SNS</div>
+                </div>
+            </div>
+
+            <h4>Contato de Familiar ou Responsável Legal</h4>
+            <hr>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="nomeFamiliarResponsavel" class="form-label">Nome:</label>
+                    <input type="text" id="nomeFamiliarResponsavel" th:field="*{nomeFamiliarResponsavel}" class="form-control" />
+                    <div th:if="${#fields.hasErrors('nomeFamiliarResponsavel')}" th:errors="*{nomeFamiliarResponsavel}" class="error-message">Erro no nome do familiar</div>
+                </div>
+                <div class="col-md-6">
+                    <label for="contactoFamiliarResponsavel" class="form-label">Contato:</label>
+                    <input type="text" id="contactoFamiliarResponsavel" th:field="*{contactoFamiliarResponsavel}" class="form-control" />
+                    <div th:if="${#fields.hasErrors('contactoFamiliarResponsavel')}" th:errors="*{contactoFamiliarResponsavel}" class="error-message">Erro no contato do familiar</div>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <button type="submit" class="btn btn-primary btn-custom">Salvar Paciente</button>
+                <a th:href="@{/painel}" class="btn btn-secondary btn-custom">Cancelar</a>
+            </div>
+        </form>
+    </div>
+
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 th:text="${editMode == true} ? 'Editar Paciente' : 'Cadastrar Novo Paciente'">Cadastrar Paciente</h2>
+            <a th:href="${editMode == true} ? @{/pacientes/{id}(id=${pacienteDTO.id})} : @{/painel}"
+               class="btn btn-outline-secondary"
+               th:text="${editMode == true} ? 'Cancelar Edição' : 'Voltar ao Painel'">Voltar</a>
+        </div>
+    
+        <form th:action="${editMode == true} ? @{/pacientes/atualizar/{id}(id=${pacienteDTO.id})} : @{/pacientes/salvar}"
+              th:object="${pacienteDTO}" method="post">
+    
+            <input type="hidden" th:if="${editMode == true}" th:field="*{id}" />
+    
+            <div class="mt-4">
+                <button type="submit" class="btn btn-primary btn-custom"
+                        th:text="${editMode == true} ? 'Salvar Alterações' : 'Salvar Paciente'">Salvar</button>
+                <a th:href="${editMode == true} ? @{/pacientes/{id}(id=${pacienteDTO.id})} : @{/painel}"
+                   class="btn btn-secondary btn-custom"
+                   th:text="${editMode == true} ? 'Cancelar' : 'Cancelar Cadastro'">Cancelar</a>
+            </div>
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
