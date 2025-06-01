@@ -26,7 +26,6 @@ import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-// Para cálculo de idade
 
 /**
  * Serviço para gerenciar a lógica de negócios relacionada a Pacientes.
@@ -82,13 +81,27 @@ public class PacienteService {
         // Mapear dados do DTO para a entidade
         paciente.setNomeCompleto(pacienteDTO.getNomeCompleto());
         paciente.setDataNascimento(pacienteDTO.getDataNascimento());
-        paciente.setNuit(pacienteDTO.getNuit());
+
+        // <<< AQUI É A ADIÇÃO NECESSÁRIA PARA NUIT >>>
+        if (pacienteDTO.getNuit() != null && pacienteDTO.getNuit().trim().isEmpty()) {
+            paciente.setNuit(null);
+        } else {
+            paciente.setNuit(pacienteDTO.getNuit());
+        }
+
         paciente.setDocumentoIdentidade(pacienteDTO.getDocumentoIdentidade());
         paciente.setEnderecoCompleto(pacienteDTO.getEnderecoCompleto());
         paciente.setContactosTelefonicos(pacienteDTO.getContactosTelefonicos());
         paciente.setEstadoCivil(pacienteDTO.getEstadoCivil());
         paciente.setProfissao(pacienteDTO.getProfissao());
-        paciente.setNumeroPacienteNP(pacienteDTO.getNumeroPacienteNP());
+
+        // <<< AQUI É A ADIÇÃO NECESSÁRIA PARA NUMERO_PACIENTE_NP >>>
+        if (pacienteDTO.getNumeroPacienteNP() != null && pacienteDTO.getNumeroPacienteNP().trim().isEmpty()) {
+            paciente.setNumeroPacienteNP(null);
+        } else {
+            paciente.setNumeroPacienteNP(pacienteDTO.getNumeroPacienteNP());
+        }
+
         paciente.setNomeFamiliarResponsavel(pacienteDTO.getNomeFamiliarResponsavel());
         paciente.setContactoFamiliarResponsavel(pacienteDTO.getContactoFamiliarResponsavel());
         paciente.setSexo(pacienteDTO.getSexo());
@@ -118,13 +131,27 @@ public class PacienteService {
         // Mapear dados do DTO para a entidade existente
         pacienteExistente.setNomeCompleto(pacienteDTO.getNomeCompleto());
         pacienteExistente.setDataNascimento(pacienteDTO.getDataNascimento());
-        pacienteExistente.setNuit(pacienteDTO.getNuit());
+
+        // <<< AQUI É A ADIÇÃO NECESSÁRIA PARA NUIT >>>
+        if (pacienteDTO.getNuit() != null && pacienteDTO.getNuit().trim().isEmpty()) {
+            pacienteExistente.setNuit(null);
+        } else {
+            pacienteExistente.setNuit(pacienteDTO.getNuit());
+        }
+
         pacienteExistente.setDocumentoIdentidade(pacienteDTO.getDocumentoIdentidade());
         pacienteExistente.setEnderecoCompleto(pacienteDTO.getEnderecoCompleto());
         pacienteExistente.setContactosTelefonicos(pacienteDTO.getContactosTelefonicos());
         pacienteExistente.setEstadoCivil(pacienteDTO.getEstadoCivil());
         pacienteExistente.setProfissao(pacienteDTO.getProfissao());
-        pacienteExistente.setNumeroPacienteNP(pacienteDTO.getNumeroPacienteNP());
+
+        // <<< AQUI É A ADIÇÃO NECESSÁRIA PARA NUMERO_PACIENTE_NP >>>
+        if (pacienteDTO.getNumeroPacienteNP() != null && pacienteDTO.getNumeroPacienteNP().trim().isEmpty()) {
+            pacienteExistente.setNumeroPacienteNP(null);
+        } else {
+            pacienteExistente.setNumeroPacienteNP(pacienteDTO.getNumeroPacienteNP());
+        }
+
         pacienteExistente.setNomeFamiliarResponsavel(pacienteDTO.getNomeFamiliarResponsavel());
         pacienteExistente.setContactoFamiliarResponsavel(pacienteDTO.getContactoFamiliarResponsavel());
         pacienteExistente.setSexo(pacienteDTO.getSexo());
@@ -174,8 +201,8 @@ public class PacienteService {
         Pageable limit = PageRequest.of(0, 10);
         List<Paciente> pacientes = pacienteRepository.findByNomeCompletoContainingIgnoreCase(termo, limit);
         return pacientes.stream()
-                        .map(Paciente::getNomeCompleto)
-                        .collect(Collectors.toList());
+                .map(Paciente::getNomeCompleto)
+                .collect(Collectors.toList());
     }
 
 
@@ -208,19 +235,6 @@ public class PacienteService {
                 predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("dataNascimento"), dataNascimentoMaxima));
             }
             if (filtro.getIdadeMaxima() != null) {
-                 // Para idade máxima X, a pessoa deve ter nascido APÓS (hoje - X - 1 ano) + 1 dia.
-                 // Ex: Idade máxima 30. Nascimento deve ser >= (hoje - 31 anos).
-                 // Ou seja, dataNascimento >= hoje.minusYears(idadeMaxima + 1).plusDays(1)
-                 // Simplificando: dataNascimento >= hoje.minusYears(idadeMaxima).minusYears(1).plusDays(1)
-                 // Correção: Se idade máxima é X, data de nascimento deve ser >= hoje - X anos.
-                 // No entanto, como estamos comparando dataNascimento, se a idade máxima é X,
-                 // a data de nascimento deve ser MAIOR OU IGUAL a hoje.minusYears(X).minusDays(diasNoAnoAtual - 1)
-                 // Forma mais simples: data de nascimento deve ser >= (hoje - X anos)
-                 // Mas como a data de nascimento é o início do período, para ter NO MÁXIMO X anos,
-                 // a data de nascimento deve ser MAIOR OU IGUAL a dataAtual.minusYears(X).minusDays(Period.between(dataAtual.minusYears(X), dataAtual).getDays())
-                 // A lógica mais simples é: dataNascimento >= hoje.minusYears(idadeMaxima).minusDays(alguns dias para cobrir o ano)
-                 // Ou, mais precisamente: dataNascimento >= hoje.minusYears(filtro.getIdadeMaxima() + 1).plusDays(1)
-                 // Se idade máxima é 30, nasceu em ou depois de (hoje - 31 anos + 1 dia)
                 LocalDate dataNascimentoMinima = hoje.minusYears(filtro.getIdadeMaxima() + 1).plusDays(1);
                 predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("dataNascimento"), dataNascimentoMinima));
             }
@@ -254,5 +268,46 @@ public class PacienteService {
     @Transactional(readOnly = true)
     public List<Paciente> listarTodosPacientes() {
         return pacienteRepository.findAll();
+    }
+
+    // O método atualizarPacienteInterno pode ser removido, pois você já tem atualizarPaciente acima que é chamado pelo Controller
+    // Se você não o usa em mais nenhum lugar, ele é redundante.
+    @Transactional
+    public Paciente atualizarPacienteInterno(Long id, PacienteDTO pacienteDTO, String medicoUsername) {
+        Paciente paciente = pacienteRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Paciente", "id", id));
+        Medico medico = medicoRepository.findByUsername(medicoUsername)
+                .orElseThrow(() -> new ResourceNotFoundException("Médico", "username", medicoUsername));
+
+        // Mapeamento do DTO para a Entidade
+        paciente.setNomeCompleto(pacienteDTO.getNomeCompleto());
+        paciente.setDataNascimento(pacienteDTO.getDataNascimento());
+
+        // LÓGICA PARA NUIT (ADICIONAR/MODIFICAR ISSO AQUI TAMBÉM SE VOCÊ FOR MANTER ESTE MÉTODO INTERNO)
+        if (pacienteDTO.getNuit() != null && pacienteDTO.getNuit().trim().isEmpty()) {
+            paciente.setNuit(null);
+        } else {
+            paciente.setNuit(pacienteDTO.getNuit());
+        }
+
+        paciente.setDocumentoIdentidade(pacienteDTO.getDocumentoIdentidade());
+        paciente.setEnderecoCompleto(pacienteDTO.getEnderecoCompleto());
+        paciente.setContactosTelefonicos(pacienteDTO.getContactosTelefonicos());
+        paciente.setEstadoCivil(pacienteDTO.getEstadoCivil());
+        paciente.setProfissao(pacienteDTO.getProfissao());
+
+        // LÓGICA PARA NUMERO_PACIENTE_NP (ADICIONAR/MODIFICAR ISSO AQUI TAMBÉM SE VOCÊ FOR MANTER ESTE MÉTODO INTERNO)
+        if (pacienteDTO.getNumeroPacienteNP() != null && pacienteDTO.getNumeroPacienteNP().trim().isEmpty()) {
+            paciente.setNumeroPacienteNP(null);
+        } else {
+            paciente.setNumeroPacienteNP(pacienteDTO.getNumeroPacienteNP());
+        }
+
+        paciente.setNomeFamiliarResponsavel(pacienteDTO.getNomeFamiliarResponsavel());
+        paciente.setContactoFamiliarResponsavel(pacienteDTO.getContactoFamiliarResponsavel());
+        paciente.setSexo(pacienteDTO.getSexo());
+        paciente.setAtualizadoPorMedico(medico);
+
+        return pacienteRepository.save(paciente);
     }
 }
