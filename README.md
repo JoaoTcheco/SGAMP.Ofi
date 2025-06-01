@@ -1,3 +1,7 @@
+
+edjo tou a ver agora afinal e para fazer slide 
+
+
 # SGAMP.Ofi
 Trabalho contrusao de sistema de gestao de arquivos medicos de pacientes
  
