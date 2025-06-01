@@ -81,7 +81,7 @@ public class WebSecurityConfig {
         // http.csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"));
         // http.headers(headers -> headers.frameOptions(frameOptions -> frameOptions.sameOrigin()));
         // Para simplificar os testes, se não estiver usando H2 e quiser desabilitar CSRF (NÃO RECOMENDADO PARA PRODUÇÃO):
-        http.csrf(csrf -> csrf.disable());
+        http.csrf(csrf -> csrf.disable());//desabilitamos um tipo de criptografia de net ou 
 
         return http.build();
     }

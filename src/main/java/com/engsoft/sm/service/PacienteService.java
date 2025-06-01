@@ -42,11 +42,7 @@ public class PacienteService {
         this.medicoRepository = medicoRepository;
     }
 
-    /**
-     * Converte uma entidade Paciente para PacienteDTO.
-     * @param paciente A entidade Paciente.
-     * @return O PacienteDTO correspondente.
-     */
+  
     public PacienteDTO converterParaDTO(Paciente paciente) {
         PacienteDTO dto = new PacienteDTO();
         dto.setId(paciente.getId()); // Importante para edição
@@ -65,13 +61,7 @@ public class PacienteService {
         return dto;
     }
 
-    /**
-     * Cria um novo paciente no sistema.
-     * @param pacienteDTO DTO com os dados do paciente a ser criado.
-     * @param medicoLogadoUsername Username do médico que está realizando o cadastro.
-     * @return A entidade Paciente que foi salva.
-     * @throws ResourceNotFoundException se o médico não for encontrado.
-     */
+   
     @Transactional
     public Paciente criarPaciente(PacienteDTO pacienteDTO, String medicoLogadoUsername) {
         Medico medicoCriador = medicoRepository.findByUsername(medicoLogadoUsername)
@@ -112,14 +102,6 @@ public class PacienteService {
         return pacienteRepository.save(paciente);
     }
 
-    /**
-     * Atualiza os dados de um paciente existente.
-     * @param id O ID do paciente a ser atualizado.
-     * @param pacienteDTO DTO com os novos dados do paciente.
-     * @param medicoLogadoUsername Username do médico que está realizando a atualização.
-     * @return A entidade Paciente atualizada.
-     * @throws ResourceNotFoundException se o paciente ou o médico não forem encontrados.
-     */
     @Transactional
     public Paciente atualizarPaciente(Long id, PacienteDTO pacienteDTO, String medicoLogadoUsername) {
         Paciente pacienteExistente = pacienteRepository.findById(id)

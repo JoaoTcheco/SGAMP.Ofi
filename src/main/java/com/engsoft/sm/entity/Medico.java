@@ -1,43 +1,42 @@
 package com.engsoft.sm.entity;
 
-import jakarta.persistence.*; // JPA (Java Persistence API) annotations
-import lombok.Getter;       // Lombok annotation to generate getters
-import lombok.Setter;       // Lombok annotation to generate setters
-import lombok.NoArgsConstructor; // Lombok annotation for no-args constructor
-import lombok.AllArgsConstructor; // Lombok annotation for all-args constructor
-import java.util.List;      // For lists of related entities
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import java.util.List;
 
-
-@Entity // Marca esta classe como uma entidade JPA (mapeada para uma tabela no banco)
-@Table(name = "medicos") // Especifica o nome da tabela no banco de dados
-@Getter // Lombok: Gera automaticamente os métodos getters para todos os campos
-@Setter // Lombok: Gera automaticamente os métodos setters para todos os campos
-@NoArgsConstructor // Lombok: Gera um construtor sem argumentos (requerido pelo JPA)
-@AllArgsConstructor // Lombok: Gera um construtor com todos os argumentos
+@Entity // Avisa o JPA que isso aqui vai virar tabela
+@Table(name = "medicos") // Nome da tabela lá no banco
+@Getter // Lombok pra fazer os get
+@Setter // Lombok pra fazer os set
+@NoArgsConstructor // Lombok pra fazer construtor vazio (JPA precisa)
+@AllArgsConstructor // Lombok pra fazer construtor com tudo
 public class Medico {
 
-    @Id // Marca este campo como a chave primária da tabela
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // Configura a geração automática do ID pelo banco (auto-incremento)
+    @Id // Chave primária, né?
+    @GeneratedValue(strategy = GenerationType.IDENTITY) 
     private Long id;
 
-    @Column(nullable = false, unique = true, length = 100) // Define que a coluna não pode ser nula, deve ser única e tem tamanho máximo de 100
-    private String username; // Nome de usuário para login
+    @Column(nullable = false, unique = true, length = 100) 
+    private String username; 
 
-    @Column(nullable = false, length = 255) // Senha (será armazenada como hash)
+    @Column(nullable = false, length = 255) 
     private String senha;
 
-    @Column(name = "nome_completo", nullable = false, length = 255) // Nome completo do médico
+    @Column(name = "nome_completo", nullable = false, length = 255) 
     private String nomeCompleto;
 
-    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT TRUE") // Define se o médico está ativo no sistema
+    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT TRUE") 
     private Boolean ativo = true;
 
-    
+
     @OneToMany(mappedBy = "criadoPorMedico", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     private List<Paciente> pacientesCadastrados;
 
-    // Um médico pode ter realizado várias consultas
+    // E aqui as consultas que o médico fez.
     @OneToMany(mappedBy = "medicoConsulta", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     private List<Consulta> consultasRealizadas;
 
-} 
+}

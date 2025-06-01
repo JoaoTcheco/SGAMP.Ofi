@@ -12,13 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class PainelController {
 
-    /**
-     * Exibe a página do painel principal.
-     * @param model O Model para adicionar atributos para a view.
-     * @param authentication Objeto de autenticação injetado pelo Spring Security,
-     * contendo os detalhes do usuário logado.
-     * @return O nome da view do painel ("painel").
-     */
+    
     @GetMapping("/painel")
     public String painelPage(Model model, Authentication authentication) {
         if (authentication != null && authentication.isAuthenticated()) {

@@ -48,11 +48,7 @@ public class PacienteController {
         this.consultaService = consultaService;
     }
 
-    /**
-     * Exibe o formulário de cadastro de um novo paciente.
-     * @param model O Model para adicionar atributos para a view.
-     * @return O nome da view de cadastro ("pacientes/cadastrar-paciente").
-     */
+   
     @GetMapping("/novo")
     public String exibirFormularioCadastro(Model model) {
         model.addAttribute("pacienteDTO", new PacienteDTO());
@@ -60,15 +56,7 @@ public class PacienteController {
         return "pacientes/cadastrar-paciente";
     }
 
-    /**
-     * Processa a submissão do formulário de cadastro de novo paciente.
-     * @param pacienteDTO O DTO com os dados do novo paciente, validado.
-     * @param bindingResult Contém os resultados da validação do DTO.
-     * @param authentication Objeto de autenticação para obter o médico logado.
-     * @param redirectAttributes Para adicionar atributos flash (disponíveis após redirect).
-     * @param model O Model para adicionar atributos de volta para a view em caso de erro.
-     * @return Redireciona para o painel em caso de sucesso, ou retorna para o formulário em caso de erro.
-     */
+  
     @PostMapping("/salvar")
     public String salvarNovoPaciente(@Valid @ModelAttribute("pacienteDTO") PacienteDTO pacienteDTO,
                                      BindingResult bindingResult,
@@ -95,11 +83,7 @@ public class PacienteController {
     }
 
 
-    /**
-     * Exibe o formulário de busca de paciente.
-     * @param model O Model para adicionar atributos para a view.
-     * @return O nome da view de procurar paciente ("pacientes/procurar-paciente").
-     */
+    
     @GetMapping("/procurar")
     public String exibirFormularioBuscaPaciente(Model model, @RequestParam(value = "nome", required = false) String nome) {
         model.addAttribute("termoBusca", nome);
@@ -115,11 +99,7 @@ public class PacienteController {
         return "pacientes/procurar-paciente";
     }
 
-    /**
-     * Endpoint API para fornecer sugestões de nomes de pacientes para autocompletar.
-     * @param termo O termo de busca parcial para nomes de pacientes.
-     * @return ResponseEntity contendo uma lista de nomes de pacientes que correspondem ao termo.
-     */
+    
     @GetMapping("/api/sugestoes-nomes")
     @ResponseBody // Indica que o retorno será o corpo da resposta (JSON)
     public ResponseEntity<List<String>> sugerirNomesPacientes(@RequestParam("termo") String termo) {
@@ -130,13 +110,7 @@ public class PacienteController {
         return ResponseEntity.ok(nomesSugeridos);
     }
 
-    /**
-     * Processa a busca de pacientes pelo nome e exibe os resultados.
-     * Este método é chamado quando o formulário de "procurar-paciente" é submetido.
-     * @param nome O nome (ou parte do nome) do paciente a ser buscado.
-     * @param model O Model para adicionar atributos para a view.
-     * @return O nome da view de procurar paciente com os resultados ("pacientes/procurar-paciente").
-     */
+    
     @GetMapping("/resultados-busca")
     public String buscarPacientes(@RequestParam("nome") String nome, Model model) {
         model.addAttribute("termoBusca", nome);
@@ -154,16 +128,7 @@ public class PacienteController {
     }
 
 
-    /**
-     * Exibe a lista de pacientes com filtros e paginação.
-     * @param filtroDTO DTO com os critérios de filtro.
-     * @param page Número da página atual (padrão 0).
-     * @param size Tamanho da página (padrão 10).
-     * @param sort Campo para ordenação (padrão "nomeCompleto").
-     * @param direction Direção da ordenação (padrão "ASC").
-     * @param model O Model para adicionar atributos para a view.
-     * @return O nome da view de listagem de pacientes ("pacientes/listar-pacientes").
-     */
+    
     @GetMapping("/listar")
     public String listarPacientes(@ModelAttribute("filtro") PacienteFiltroDTO filtroDTO,
                                   @RequestParam(value = "page", defaultValue = "0") int page,
@@ -191,13 +156,7 @@ public class PacienteController {
     }
 
 
-    /**
-     * Exibe o formulário para editar um paciente existente.
-     * @param id O ID do paciente a ser editado.
-     * @param model O Model para adicionar atributos para a view.
-     * @param redirectAttributes Para mensagens em caso de não encontrar o paciente.
-     * @return O nome da view de cadastro/edição ("pacientes/cadastrar-paciente") ou redireciona se não encontrar.
-     */
+    
     @GetMapping("/editar/{id}")
     public String exibirFormularioEditarPaciente(@PathVariable("id") Long id, Model model, RedirectAttributes redirectAttributes) {
         try {

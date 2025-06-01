@@ -20,10 +20,7 @@ public class PacienteFiltroDTO {
     private Integer idadeMaxima;
     private String sexo;
     private String sintoma; // Campo genérico para busca em sintomas
-    private String doenca;  // Campo genérico para busca em histórico/diagnóstico
+    private String doenca;  // Campo genérico para busca em histórico ou /diagnostico
 
-    // Outros critérios relevantes podem ser adicionados aqui:
-    // private String cidade;
-    // private LocalDate dataCadastroDe;
-    // private LocalDate dataCadastroAte;
+   
 }

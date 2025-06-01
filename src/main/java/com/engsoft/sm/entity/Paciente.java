@@ -30,27 +30,27 @@ public class Paciente {
     private String nomeCompleto;
 
     @Column(name = "data_nascimento", nullable = false)
-    private LocalDate dataNascimento; // Apenas data, sem hora
+    private LocalDate dataNascimento; 
 
-    @Column(length = 50, unique = true) // NUIT pode ser único
+    @Column(length = 50, unique = true) 
     private String nuit;
 
     @Column(name = "documento_identidade", length = 100)
     private String documentoIdentidade;
 
-    @Column(name = "endereco_completo", columnDefinition = "TEXT") // Para textos mais longos
+    @Column(name = "endereco_completo", columnDefinition = "TEXT") 
     private String enderecoCompleto;
 
     @Column(name = "contactos_telefonicos", length = 255)
-    private String contactosTelefonicos; // Pode armazenar múltiplos, separados por vírgula
+    private String contactosTelefonicos; 
 
     @Column(name = "estado_civil", length = 50)
-    private String estadoCivil; // Ex: "Solteiro(a)", "Casado(a)". Poderia ser um Enum.
+    private String estadoCivil; 
 
     @Column(length = 150)
     private String profissao;
 
-    @Column(name = "numero_paciente_np", length = 100, unique = true) // Pode ser único
+    @Column(name = "numero_paciente_np", length = 100, unique = true) 
     private String numeroPacienteNP;
 
     @Column(name = "nome_familiar_responsavel", length = 255)
@@ -60,9 +60,9 @@ public class Paciente {
     private String contactoFamiliarResponsavel;
 
     @Column(length = 20)
-    private String sexo; // Ex: "Masculino", "Feminino". Poderia ser um Enum.
+    private String sexo; 
 
-    // --- Auditoria ---
+    // ---para a Auditoria ---
     @Column(name = "data_cadastro", nullable = false, updatable = false) // Não pode ser atualizado após criação
     private LocalDateTime dataCadastro;
 

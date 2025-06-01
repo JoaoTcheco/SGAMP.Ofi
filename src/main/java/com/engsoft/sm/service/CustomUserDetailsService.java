@@ -23,23 +23,11 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     private final MedicoRepository medicoRepository;
 
-    /**
-     * Construtor para injeção de dependência do MedicoRepository.
-     * @param medicoRepository O repositório para acesso aos dados dos médicos.
-     */
-    // Spring injetará uma instância de MedicoRepository aqui
+    
     public CustomUserDetailsService(MedicoRepository medicoRepository) {
         this.medicoRepository = medicoRepository;
     }
 
-    /**
-     * Localiza o usuário (Médico) com base no nome de usuário fornecido.
-     * Este método é chamado pelo Spring Security durante o processo de autenticação.
-     *
-     * @param username O nome de usuário (username do Médico) para buscar.
-     * @return Um objeto UserDetails contendo as informações do usuário encontrado.
-     * @throws UsernameNotFoundException Se o usuário não for encontrado com o username fornecido.
-     */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         // Busca o médico no banco de dados pelo username
@@ -47,15 +35,10 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .orElseThrow(() ->
                         new UsernameNotFoundException("Médico não encontrado com o username: " + username));
 
-        // Define as permissões/roles do usuário.
-        // Para este sistema, todos os médicos logados terão a role "MEDICO".
-        // Se houvesse diferentes tipos de usuários (admin, técnico), poderíamos adicionar mais roles.
+        
         Collection<? extends GrantedAuthority> authorities =
                 Collections.singletonList(new SimpleGrantedAuthority("ROLE_MEDICO"));
 
-        // Retorna um objeto User do Spring Security.
-        // Este objeto contém o username, a senha (hash), e as permissões.
-        // O Spring Security usará a senha retornada aqui para comparar com a senha fornecida no login.
         return new User(medico.getUsername(), medico.getSenha(), authorities);
     }
 }

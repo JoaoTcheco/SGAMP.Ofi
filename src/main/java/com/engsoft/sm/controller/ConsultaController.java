@@ -35,17 +35,7 @@ public class ConsultaController {
         this.pacienteService = pacienteService;
     }
 
-    /**
-     * Processa a submissão do formulário de nova consulta para um paciente específico.
-     *
-     * @param pacienteId O ID do paciente ao qual a consulta pertence.
-     * @param consultaDTO O DTO com os dados da nova consulta, validado.
-     * @param bindingResult Contém os resultados da validação do DTO.
-     * @param authentication Objeto de autenticação para obter o médico logado.
-     * @param redirectAttributes Para adicionar atributos flash (disponíveis após redirect).
-     * @param model O Model para adicionar atributos de volta para a view em caso de erro.
-     * @return Redireciona para o painel em caso de sucesso, ou retorna para a tela do paciente em caso de erro.
-     */
+   
     @PostMapping("/paciente/{pacienteId}/salvar") // Mapeia para POST /consultas/paciente/{id_do_paciente}/salvar
     public String salvarNovaConsulta(@PathVariable("pacienteId") Long pacienteId,
                                      @Valid @ModelAttribute("novaConsultaDTO") ConsultaDTO consultaDTO,

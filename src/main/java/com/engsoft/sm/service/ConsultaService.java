@@ -35,15 +35,7 @@ public class ConsultaService {
         this.medicoRepository = medicoRepository;
     }
 
-    /**
-     * Cria uma nova consulta para um paciente.
-     *
-     * @param pacienteId O ID do paciente para o qual a consulta será criada.
-     * @param consultaDTO DTO com os dados da consulta.
-     * @param medicoLogadoUsername Username do médico que está realizando a consulta.
-     * @return A entidade Consulta que foi salva.
-     * @throws ResourceNotFoundException se o paciente ou o médico não forem encontrados.
-     */
+    
     @Transactional
     public Consulta criarConsulta(Long pacienteId, ConsultaDTO consultaDTO, String medicoLogadoUsername) {
         Paciente paciente = pacienteRepository.findById(pacienteId)
@@ -71,21 +63,11 @@ public class ConsultaService {
         consulta.setSinaisVitais(consultaDTO.getSinaisVitais());
         consulta.setDadosImagem(consultaDTO.getDadosImagem());
         consulta.setDadosGeneticos(consultaDTO.getDadosGeneticos());
-        // dataCriacao é definida pelo @PrePersist na entidade Consulta
-
-        // Adiciona a consulta à lista de consultas do paciente (para manter o relacionamento bidirecional, se gerenciado manualmente)
-        // paciente.getConsultas().add(consulta); // Se o relacionamento for gerenciado e cascade estiver configurado adequadamente.
-        // Alternativamente, o save da consulta já estabelece o link pelo paciente_id.
-
+       
         return consultaRepository.save(consulta);
     }
 
-    /**
-     * Busca todas as consultas de um paciente específico, ordenadas pela data da consulta (mais recentes primeiro).
-     *
-     * @param pacienteId O ID do paciente.
-     * @return Lista de consultas do paciente.
-     */
+  
     @Transactional(readOnly = true)
     public List<Consulta> buscarConsultasPorPacienteId(Long pacienteId) {
         // Verifica se o paciente existe antes de buscar as consultas (opcional, mas boa prática)
@@ -95,12 +77,7 @@ public class ConsultaService {
         return consultaRepository.findByPacienteIdOrderByDataConsultaDesc(pacienteId);
     }
 
-    /**
-     * Busca uma consulta pelo seu ID.
-     * @param consultaId O ID da consulta.
-     * @return A entidade Consulta.
-     * @throws ResourceNotFoundException se a consulta não for encontrada.
-     */
+   
     @Transactional(readOnly = true)
     public Consulta buscarConsultaPorId(Long consultaId) {
         return consultaRepository.findById(consultaId)

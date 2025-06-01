@@ -11,16 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class AuthController {
 
-    /**
-     * Exibe a página de login.
-     * Também trata os parâmetros 'error' e 'logout' que podem ser enviados
-     * pelo Spring Security após uma tentativa de login falha ou um logout bem-sucedido.
-     *
-     * @param model O Model para adicionar atributos para a view.
-     * @param error Parâmetro opcional indicando erro no login.
-     * @param logout Parâmetro opcional indicando logout bem-sucedido.
-     * @return O nome da view de login ("login").
-     */
+   
     @GetMapping("/login")
     public String loginPage(Model model,
                           @RequestParam(value = "error", required = false) String error,

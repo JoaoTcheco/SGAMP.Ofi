@@ -48,7 +48,7 @@ public class DataInitializer implements CommandLineRunner {
             }
         }
 
-        // Você pode adicionar outros dados iniciais aqui, se necessário
+        
     }
 }
 
