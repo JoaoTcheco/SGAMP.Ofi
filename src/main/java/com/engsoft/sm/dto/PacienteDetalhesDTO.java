@@ -33,20 +33,9 @@ public class PacienteDetalhesDTO {
     private String nomeFamiliarResponsavel;
     private String contactoFamiliarResponsavel;
     private String sexo;
-    // Adicionar outros campos do paciente que são relevantes para exibição na tela de detalhes.
-
-    // Lista de consultas do paciente
-    // Poderia ser List<ConsultaDTO> se você quiser transformar cada consulta em um DTO também.
-    // Usar a entidade Consulta diretamente aqui é mais simples se os campos da entidade são adequados para exibição.
+    
+    
     private List<Consulta> consultas;
 
-    // Você pode adicionar um construtor que recebe a entidade Paciente e a lista de Consultas
-    // para facilitar a criação deste DTO no serviço.
-    // Exemplo:
-    // public PacienteDetalhesDTO(Paciente paciente, List<Consulta> consultas) {
-    //     this.id = paciente.getId();
-    //     this.nomeCompleto = paciente.getNomeCompleto();
-    //     // ... copiar outros campos do paciente
-    //     this.consultas = consultas;
-    // }
+    
 }

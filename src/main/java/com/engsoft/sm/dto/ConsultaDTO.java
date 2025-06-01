@@ -19,12 +19,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class ConsultaDTO {
 
-    private Long id; // Pode ser útil se futuramente houver edição de consultas
-
-    // O ID do paciente e do médico que realiza a consulta não vêm do formulário de dados da consulta em si,
-    // mas sim do contexto (ex: URL ou sessão). Portanto, não são campos obrigatórios aqui.
-    // private Long pacienteId;
-    // private Long medicoId;
+    private Long id; 
 
     @NotNull(message = "Data da consulta é obrigatória.")
     @PastOrPresent(message = "Data da consulta não pode ser no futuro.")
@@ -42,8 +37,5 @@ public class ConsultaDTO {
     private String dadosImagem;
     private String dadosGeneticos;
 
-    // O ID do paciente ao qual esta consulta pertence.
-    // Não é preenchido pelo formulário da consulta em si, mas necessário para o serviço.
-    // Pode ser omitido se o serviço sempre receber o pacienteId separadamente.
-    // private Long pacienteId;
+    
 }

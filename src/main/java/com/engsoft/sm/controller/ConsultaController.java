@@ -95,8 +95,5 @@ public class ConsultaController {
         }
     }
 
-    // Poderia haver um método GET para exibir um formulário de nova consulta separado,
-    // mas no fluxo atual, o formulário está embutido na 'tela-paciente.html'.
-    // @GetMapping("/paciente/{pacienteId}/nova")
-    // public String exibirFormularioNovaConsulta(@PathVariable("pacienteId") Long pacienteId, Model model) { ... }
+   
 }

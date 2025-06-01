@@ -5,11 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository; // Interface base 
 import org.springframework.stereotype.Repository; // Anotação para marcar como um componente de repositório Spring
 import java.util.Optional; // Para retornos que podem ser nulos de forma segura
 
-/**
- * Repositório Spring Data JPA para a entidade {@link Medico}.
- * Esta interface herda métodos CRUD básicos de JpaRepository (como save, findById, findAll, delete)
- * e permite a definição de métodos de consulta customizados.
- */
+
 @Repository // Indica ao Spring que esta é uma interface de repositório gerenciada
 public interface MedicoRepository extends JpaRepository<Medico, Long> { // <Entidade, TipoDaChavePrimaria>
 
@@ -22,7 +18,5 @@ public interface MedicoRepository extends JpaRepository<Medico, Long> { // <Enti
      */
     Optional<Medico> findByUsername(String username);
 
-    // Outros métodos de consulta customizados podem ser adicionados aqui conforme necessário.
-    // Exemplo:
-    // List<Medico> findByAtivoTrue(); // Encontra todos os médicos ativos
+    
 }

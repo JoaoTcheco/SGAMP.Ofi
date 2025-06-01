@@ -39,9 +39,5 @@ public interface PacienteRepository extends JpaRepository<Paciente, Long>, JpaSp
      */
     Optional<Paciente> findBynumeroPacienteNP(String numeroPacienteNP);
 
-    // Para a funcionalidade de "listar pacientes por várias condições",
-    // usaremos JpaSpecificationExecutor, que permite criar queries dinâmicas
-    // na camada de serviço usando a Criteria API do JPA.
-    // Não precisamos definir métodos específicos aqui para cada combinação de filtro,
-    // a menos que sejam consultas muito comuns e fixas.
+    
 }

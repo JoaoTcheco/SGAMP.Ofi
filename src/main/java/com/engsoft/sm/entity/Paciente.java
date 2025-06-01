@@ -79,11 +79,7 @@ public class Paciente {
     @JoinColumn(name = "atualizado_por_medico_id", referencedColumnName = "id")
     private Medico atualizadoPorMedico;
 
-    // Relacionamento: Um paciente pode ter várias consultas
-    // mappedBy = "paciente": O campo 'paciente' na entidade 'Consulta' gerencia este relacionamento.
-    // CascadeType.ALL: Se um paciente for removido, todas as suas consultas também serão. (Decisão de negócio)
-    // orphanRemoval = true: Se uma consulta for removida da lista 'consultas' do paciente,
-    //                     ela também será removida do banco de dados.
+   
     @OneToMany(mappedBy = "paciente", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Consulta> consultas;
 
