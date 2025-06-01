@@ -9,6 +9,23 @@
         .container { max-width: 900px; background-color: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
         .search-results table { margin-top: 20px; }
         .table th, .table td { vertical-align: middle; }
+        /* Estilos para o autocomplete */
+        .autocomplete-suggestions {
+            border: 1px solid #ddd;
+            max-height: 150px;
+            overflow-y: auto;
+            position: absolute;
+            background-color: #fff;
+            z-index: 99;
+            width: calc(100% - 120px); /* Ajustar largura conforme o botão */
+        }
+        .autocomplete-suggestion {
+            padding: 8px;
+            cursor: pointer;
+        }
+        .autocomplete-suggestion:hover {
+            background-color: #f0f0f0;
+        }
     </style>
 </head>
 <body>
@@ -20,13 +37,15 @@
 
         <form th:action="@{/pacientes/resultados-busca}" method="get" class="mb-4">
             <div class="input-group">
-                <input type="text" name="nome" class="form-control" placeholder="Digite o nome do paciente..." th:value="${termoBusca}" aria-label="Nome do paciente">
+                <input type="text" name="nome" id="nomePacienteInput" class="form-control"
+                       placeholder="Digite o nome do paciente..." th:value="${termoBusca}"
+                       aria-label="Nome do paciente" autocomplete="off">
                 <button class="btn btn-primary" type="submit">Procurar</button>
             </div>
-            </form>
+            <div id="suggestionsDropdown" class="autocomplete-suggestions" style="display: none;"></div>
+        </form>
 
         <div th:if="${mensagemInfo}" class="alert alert-info" role="alert" th:text="${mensagemInfo}">
-            Nenhum paciente encontrado.
         </div>
 
         <div class="search-results" th:if="${not #lists.isEmpty(pacientesEncontrados)}">
@@ -44,7 +63,9 @@
                 <tbody>
                     <tr th:each="paciente : ${pacientesEncontrados}">
                         <td th:text="${paciente.id}">1</td>
-                        <td th:text="${paciente.nomeCompleto}">Nome do Paciente</td>
+                        <td>
+                            <a th:href="@{/pacientes/{id}(id=${paciente.id})}" th:text="${paciente.nomeCompleto}">Nome do Paciente</a>
+                        </td>
                         <td th:text="${#temporals.format(paciente.dataNascimento, 'dd/MM/yyyy')}">01/01/1990</td>
                         <td th:text="${paciente.nuit}">123456789</td>
                         <td>
@@ -55,12 +76,63 @@
             </table>
         </div>
         <div th:if="${#lists.isEmpty(pacientesEncontrados) and termoBusca != null and termoBusca != '' and mensagemInfo == null}">
-             <p class="text-muted">Nenhum paciente encontrado com os critérios fornecidos.</p>
+             <p class="text-muted">Nenhum paciente encontrado com o nome '<span th:text="${termoBusca}"></span>'.</p>
         </div>
-
 
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const nomeInput = document.getElementById('nomePacienteInput');
+            const suggestionsDropdown = document.getElementById('suggestionsDropdown');
+
+            nomeInput.addEventListener('input', function () {
+                const termo = nomeInput.value;
+
+                if (termo.length < 2) { // Não buscar com menos de 2 caracteres
+                    suggestionsDropdown.innerHTML = '';
+                    suggestionsDropdown.style.display = 'none';
+                    return;
+                }
+
+                // Fazer chamada AJAX para o backend
+                fetch(`/pacientes/api/sugestoes-nomes?termo=${encodeURIComponent(termo)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        suggestionsDropdown.innerHTML = ''; // Limpar sugestões anteriores
+                        if (data && data.length > 0) {
+                            data.forEach(nomeSugerido => {
+                                const suggestionDiv = document.createElement('div');
+                                suggestionDiv.classList.add('autocomplete-suggestion');
+                                suggestionDiv.textContent = nomeSugerido;
+                                suggestionDiv.addEventListener('click', function () {
+                                    nomeInput.value = nomeSugerido; // Preencher o input
+                                    suggestionsDropdown.innerHTML = '';
+                                    suggestionsDropdown.style.display = 'none';
+                                    // Opcional: submeter o formulário automaticamente
+                                    // nomeInput.form.submit();
+                                });
+                                suggestionsDropdown.appendChild(suggestionDiv);
+                            });
+                            suggestionsDropdown.style.display = 'block';
+                        } else {
+                            suggestionsDropdown.style.display = 'none';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Erro ao buscar sugestões:', error);
+                        suggestionsDropdown.style.display = 'none';
+                    });
+            });
+
+            // Fechar dropdown se clicar fora
+            document.addEventListener('click', function (e) {
+                if (e.target !== nomeInput && e.target.parentNode !== suggestionsDropdown) {
+                    suggestionsDropdown.style.display = 'none';
+                }
+            });
+        });
+    </script>
 </body>
 </html>
