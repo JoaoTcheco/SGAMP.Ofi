@@ -34,6 +34,7 @@ public class WebSecurityConfig {
      * NÃO USE EM PRODUÇÃO. Em produção, use BCryptPasswordEncoder.
      * @return uma instância de NoOpPasswordEncoder.
      */
+    @SuppressWarnings("deprecation")
     @Bean
     public static PasswordEncoder passwordEncoder() {
         // ATENÇÃO: Usando NoOpPasswordEncoder APENAS PARA TESTES.

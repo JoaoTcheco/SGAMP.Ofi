@@ -9,7 +9,7 @@ import com.engsoft.sm.repository.MedicoRepository; // Para buscar o médico loga
 import com.engsoft.sm.repository.PacienteRepository;
 import com.engsoft.sm.exception.ResourceNotFoundException; // Exceção customizada
 
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.data.domain.Page; // Para paginação
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable; // Para informações de paginação
@@ -22,7 +22,7 @@ import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate; // Para construir predicates na Specification
 
 import java.time.LocalDate;
-import java.time.Period;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -36,7 +36,7 @@ public class PacienteService {
     private final PacienteRepository pacienteRepository;
     private final MedicoRepository medicoRepository;
 
-    @Autowired // Boa prática adicionar @Autowired no construtor para injeção
+     // Boa prática adicionar @Autowired no construtor para injeção
     public PacienteService(PacienteRepository pacienteRepository, MedicoRepository medicoRepository) {
         this.pacienteRepository = pacienteRepository;
         this.medicoRepository = medicoRepository;
